@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CinePolys — Gestión de Producción Cinematográfica
 
-## Getting Started
+Sistema integral para la gestión de producciones audiovisuales. Organiza proyectos, equipos, guiones, locaciones, casting, tareas, llamados de producción y post-producción desde un solo panel.
 
-First, run the development server:
+## Objetivo
+
+Centralizar y simplificar la administración de producciones cinematográficas, reemplazando planillas sueltas y comunicaciones dispersas por una plataforma unificada con roles, notificaciones en tiempo real y control de flujo de trabajo desde pre-producción hasta entrega final.
+
+## Guía de instalación
+
+### Requisitos
+
+- Node.js 20+
+- npm
+
+### Pasos
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clonar el repositorio
+git clone https://github.com/symonchannel-jpg/CinePolys.git
+cd CinePolys
+
+# Instalar dependencias
+npm install
+
+# Configurar variables de entorno
+cp .env.example .env
+
+# Generar cliente de Prisma y sincronizar base de datos
+npx prisma generate --schema prisma/schema-sqlite.prisma
+npx prisma db push --schema prisma/schema-sqlite.prisma
+
+# Sembrar datos iniciales (opcional)
+npx tsx prisma/seed.ts
+
+# Iniciar servidor de desarrollo
+npm run dev -- --port 3001
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+O directamente ejecutar `start.bat` que hace todo automáticamente.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Acceso
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Abrir [http://localhost:3001](http://localhost:3001). La app redirige al login automáticamente.
 
-## Learn More
+## Documentación extra
 
-To learn more about Next.js, take a look at the following resources:
+### Stack técnico
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Capa          | Tecnología                          |
+| ------------- | ----------------------------------- |
+| Frontend      | Next.js 16, React 19, Tailwind CSS 4 |
+| UI            | Base UI, Lucide React               |
+| Base de datos | SQLite (desarrollo) / PostgreSQL (producción) |
+| ORM           | Prisma 7                            |
+| Autenticación | NextAuth v4                         |
+| Mapas         | Leaflet                             |
+| Imágenes      | Sharp                               |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Estructura del proyecto
 
-## Deploy on Vercel
+```
+src/
+├── app/
+│   ├── (app)/          # Rutas autenticadas (Dashboard, Proyectos, Tareas, etc.)
+│   ├── api/            # API routes (REST)
+│   ├── login/          # Login
+│   ├── register/       # Registro
+│   └── share/          # Links compartidos
+├── components/
+│   ├── layout/         # AppLayout, Sidebar, Omnibar, etc.
+│   ├── modules/        # Componentes funcionales (mapa de locaciones, etc.)
+│   └── ui/             # Componentes base (Button, Dialog, Input, Select, etc.)
+├── lib/                # Lógica compartida (auth, prisma, utils, contexto)
+└── types/              # Tipos TypeScript
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Roles
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **ADMIN** — Acceso completo, gestión de usuarios y proyectos
+- **HOD** — Head of Department, gestiona su equipo y tareas
+- **CREW** — Miembro del equipo, visualiza y actualiza tareas asignadas
+
+### Módulos
+
+- **Dashboard** — Resumen por proyecto con métricas clave
+- **Proyectos** — CRUD de proyectos con ordenamiento drag & drop
+- **Guiones** — Versiones, desglose por escena y seguimiento
+- **Casting** — Base de datos de elenco y perfiles
+- **Locaciones** — Mapa interactivo con Leaflet
+- **Tareas** — Tablero con filtros, comentarios y vencimientos
+- **Llamados** — Call sheets con links compartidos
+- **Departamentos** — Organización del equipo
+- **Post-producción** — Seguimiento de VFX, cortes, ADR y entregables
+- **Actividad** — Historial de cambios en tiempo real (SSE)
