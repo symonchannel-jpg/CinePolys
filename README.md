@@ -1,5 +1,7 @@
 # CinePolys — Film Production Management
 
+![Dashboard screenshot](Captura%20de%20pantalla%202026-05-27%20183338.png)
+
 All-in-one system for managing audiovisual productions. Organize projects, crews, scripts, locations, casting, tasks, call sheets, and post-production from a single dashboard.
 
 ## Goal
