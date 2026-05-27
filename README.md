@@ -37,7 +37,8 @@ npx tsx prisma/seed.ts
 npm run dev -- --port 3001
 ```
 
-O directamente ejecutar `start.bat` que hace todo automáticamente.
+> **Windows:** Podés usar `start.bat` que hace todos los pasos automáticamente.  
+> **Mac / Linux:** Los comandos de arriba funcionan igual. Opcionalmente creá un `start.sh` con la misma lógica.
 
 ### Acceso
 
