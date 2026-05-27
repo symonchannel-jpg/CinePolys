@@ -1,96 +1,96 @@
-# CinePolys — Gestión de Producción Cinematográfica
+# CinePolys — Film Production Management
 
-Sistema integral para la gestión de producciones audiovisuales. Organiza proyectos, equipos, guiones, locaciones, casting, tareas, llamados de producción y post-producción desde un solo panel.
+All-in-one system for managing audiovisual productions. Organize projects, crews, scripts, locations, casting, tasks, call sheets, and post-production from a single dashboard.
 
-## Objetivo
+## Goal
 
-Centralizar y simplificar la administración de producciones cinematográficas, reemplazando planillas sueltas y comunicaciones dispersas por una plataforma unificada con roles, notificaciones en tiempo real y control de flujo de trabajo desde pre-producción hasta entrega final.
+Centralize and simplify film production management — replacing scattered spreadsheets and fragmented communications with a unified platform featuring role-based access, real-time notifications, and workflow control from pre-production through final delivery.
 
-## Guía de instalación
+## Installation guide
 
-### Requisitos
+### Requirements
 
 - Node.js 20+
 - npm
 
-### Pasos
+### Steps
 
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone https://github.com/symonchannel-jpg/CinePolys.git
 cd CinePolys
 
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Configurar variables de entorno
+# Set up environment variables
 cp .env.example .env
 
-# Generar cliente de Prisma y sincronizar base de datos
+# Generate Prisma client and sync database
 npx prisma generate --schema prisma/schema-sqlite.prisma
 npx prisma db push --schema prisma/schema-sqlite.prisma
 
-# Sembrar datos iniciales (opcional)
+# Seed initial data (optional)
 npx tsx prisma/seed.ts
 
-# Iniciar servidor de desarrollo
+# Start the development server
 npm run dev -- --port 3001
 ```
 
-> **Windows:** Podés usar `start.bat` que hace todos los pasos automáticamente.  
-> **Mac / Linux:** Los comandos de arriba funcionan igual. Opcionalmente creá un `start.sh` con la misma lógica.
+> **Windows:** You can use `start.bat` to automate all steps.  
+> **Mac / Linux:** The commands above work the same. Optionally create a `start.sh` script with the same logic.
 
-### Acceso
+### Access
 
-Abrir [http://localhost:3001](http://localhost:3001). La app redirige al login automáticamente.
+Open [http://localhost:3001](http://localhost:3001). The app automatically redirects to the login page.
 
-## Documentación extra
+## Extra documentation
 
-### Stack técnico
+### Tech stack
 
-| Capa          | Tecnología                          |
-| ------------- | ----------------------------------- |
+| Layer         | Technology                           |
+| ------------- | ------------------------------------ |
 | Frontend      | Next.js 16, React 19, Tailwind CSS 4 |
-| UI            | Base UI, Lucide React               |
-| Base de datos | SQLite (desarrollo) / PostgreSQL (producción) |
-| ORM           | Prisma 7                            |
-| Autenticación | NextAuth v4                         |
-| Mapas         | Leaflet                             |
-| Imágenes      | Sharp                               |
+| UI            | Base UI, Lucide React                |
+| Database      | SQLite (dev) / PostgreSQL (production) |
+| ORM           | Prisma 7                             |
+| Auth          | NextAuth v4                          |
+| Maps          | Leaflet                              |
+| Images        | Sharp                                |
 
-### Estructura del proyecto
+### Project structure
 
 ```
 src/
 ├── app/
-│   ├── (app)/          # Rutas autenticadas (Dashboard, Proyectos, Tareas, etc.)
-│   ├── api/            # API routes (REST)
-│   ├── login/          # Login
-│   ├── register/       # Registro
-│   └── share/          # Links compartidos
+│   ├── (app)/          # Authenticated routes (Dashboard, Projects, Tasks, etc.)
+│   ├── api/            # REST API routes
+│   ├── login/          # Login page
+│   ├── register/       # Registration page
+│   └── share/          # Shared links
 ├── components/
 │   ├── layout/         # AppLayout, Sidebar, Omnibar, etc.
-│   ├── modules/        # Componentes funcionales (mapa de locaciones, etc.)
-│   └── ui/             # Componentes base (Button, Dialog, Input, Select, etc.)
-├── lib/                # Lógica compartida (auth, prisma, utils, contexto)
-└── types/              # Tipos TypeScript
+│   ├── modules/        # Feature components (location map, etc.)
+│   └── ui/             # Base components (Button, Dialog, Input, Select, etc.)
+├── lib/                # Shared logic (auth, prisma, utils, contexts)
+└── types/              # TypeScript type definitions
 ```
 
 ### Roles
 
-- **ADMIN** — Acceso completo, gestión de usuarios y proyectos
-- **HOD** — Head of Department, gestiona su equipo y tareas
-- **CREW** — Miembro del equipo, visualiza y actualiza tareas asignadas
+- **ADMIN** — Full access, user and project management
+- **HOD** — Head of Department, manages their team and tasks
+- **CREW** — Team member, views and updates assigned tasks
 
-### Módulos
+### Modules
 
-- **Dashboard** — Resumen por proyecto con métricas clave
-- **Proyectos** — CRUD de proyectos con ordenamiento drag & drop
-- **Guiones** — Versiones, desglose por escena y seguimiento
-- **Casting** — Base de datos de elenco y perfiles
-- **Locaciones** — Mapa interactivo con Leaflet
-- **Tareas** — Tablero con filtros, comentarios y vencimientos
-- **Llamados** — Call sheets con links compartidos
-- **Departamentos** — Organización del equipo
-- **Post-producción** — Seguimiento de VFX, cortes, ADR y entregables
-- **Actividad** — Historial de cambios en tiempo real (SSE)
+- **Dashboard** — Per-project overview with key metrics
+- **Projects** — Project CRUD with drag & drop ordering
+- **Scripts** — Versioning, scene breakdown and tracking
+- **Casting** — Cast database and profiles
+- **Locations** — Interactive map powered by Leaflet
+- **Tasks** — Board with filters, comments and due dates
+- **Call Sheets** — Production call sheets with shareable links
+- **Departments** — Team organization
+- **Post-production** — VFX tracking, cuts, ADR and deliverables
+- **Activity** — Real-time change history (SSE)
