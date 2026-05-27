@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="Captura%20de%20pantalla%202026-05-27%20183338.png" alt="Dashboard screenshot" width="800"/>
+  <img src="banner.png" alt="Dashboard screenshot" width="800"/>
 </p>
 
 <p align="center">
