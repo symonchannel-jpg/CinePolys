@@ -1,0 +1,49 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# env files
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# database
+dev.db
+*.db
+*.sqlite
+
+# user uploads
+/public/uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# playwright
+/test-results/
+/playwright-report/
+
+# prisma generated
+/src/generated/prisma/
+
+# backup folders
+/backup_*/
+/cinepolis_backup_*/
