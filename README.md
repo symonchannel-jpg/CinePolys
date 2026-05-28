@@ -119,13 +119,14 @@ src/
 - [ ] Deep links in search results (`/casting?focus=id`)
 - [ ] Filtered vs total counts in list headers
 - [ ] Accessibility: ARIA roles on tabs, keyboard nav on lists
-- [ ] Reusable `<ColorPicker>` component
+- [x] Reusable `<ColorPicker>` component
 
 ### Redundancies / Code Quality
-- [ ] Shared constants (statusColors, priorityLabels)
-- [ ] Accessible `<FormTabs>` component with ARIA
+- [x] Shared constants (statusColors, priorityLabels)
+- [x] Accessible `<FormTabs>` component with ARIA
 - [ ] Eliminate `any` types — strict typing across the app
-- [ ] Migrate `Location.images` and `CallSheet.content` to native Json type
+- [x] Migrate `Location.images` and `CallSheet.content` to native Json type
+- [x] Remove manual JSON.parse/stringify for Prisma Json fields
 
 ### Performance
 - [ ] Parallelize dashboard queries with `Promise.all`
