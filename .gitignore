@@ -49,3 +49,6 @@ yarn-error.log*
 /backup_*/
 /cinepolis_backup_*/
 banner.png
+
+# local setup notes
+GITHUB_SETUP.md
