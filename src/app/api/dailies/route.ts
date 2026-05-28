@@ -46,7 +46,7 @@ export async function POST(req: Request) {
   const sheet = await prisma.callSheet.create({
     data: {
       date: new Date(date),
-      content: content || "{}",
+      content: content || {},
       createdById: session.user.id,
       projectId: pid,
     },

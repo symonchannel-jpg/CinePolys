@@ -45,7 +45,7 @@ export async function PATCH(
   const existing = await prisma.location.findFirst({ where: { id, archivedAt: null } })
   if (!existing) return NextResponse.json({ error: "No encontrada" }, { status: 404 })
 
-  let savedImages: string[] = existingImagesRaw ? JSON.parse(existingImagesRaw) : JSON.parse(existing.images || "[]")
+  let savedImages: string[] = existingImagesRaw ? JSON.parse(existingImagesRaw) : (existing.images as string[]) || []
   await mkdir(LOCATIONS_UPLOAD_DIR, { recursive: true })
 
   for (const file of files) {
@@ -64,7 +64,7 @@ export async function PATCH(
         ...(description !== null && description !== undefined && { description }),
         lat,
         lng,
-        images: JSON.stringify(savedImages),
+        images: savedImages,
       },
     })
     await logActivity({ projectId: existing.projectId, entityType: "location", entityId: id, action: "UPDATED", userId: session.user.id })
@@ -95,7 +95,7 @@ export async function DELETE(
   await logActivity({ projectId: location.projectId, entityType: "location", entityId: id, action: "ARCHIVED", userId: session.user.id })
 
   try {
-    const images: string[] = JSON.parse(location.images || "[]")
+    const images: string[] = (location.images as string[]) || []
     for (const imgPath of images) {
       await deleteImageFiles(path.join(process.cwd(), "public", imgPath))
     }

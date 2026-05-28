@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { SelectValueI18n, SelectI18n } from "@/components/ui/select-i18n"
 import { Textarea } from "@/components/ui/textarea"
+import { FormTabs } from "@/components/ui/form-tabs"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useProject } from "@/lib/project-context"
 import {
@@ -18,20 +19,10 @@ import {
   useScriptBreakdown, useCreateBreakdownItem, useUpdateBreakdownItem, useArchiveBreakdownItem,
   useCasting, useLocations, useTasks, useCreateTask, useDepartments, useUsers,
 } from "@/lib/api-hooks"
-
-const statusColors: Record<string, string> = {
-  DRAFT: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-  IN_REVIEW: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  LOCKED: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  IN_PRODUCTION: "bg-green-500/10 text-green-400 border-green-500/20",
-}
-
-const statusLabels: Record<string, string> = {
-  DRAFT: "Borrador",
-  IN_REVIEW: "En Revisión",
-  LOCKED: "Bloqueado",
-  IN_PRODUCTION: "En Producción",
-}
+import {
+  SCRIPT_STATUS_COLORS as statusColors,
+  SCRIPT_STATUS_LABELS as statusLabels,
+} from "@/lib/constants"
 
 const typeLabels: Record<string, string> = {
   LITERARY: "Literario",
@@ -554,30 +545,14 @@ function ScriptBreakdown({ scriptId, script }: { scriptId: string; script: any }
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>Elemento de desglose</DialogTitle></DialogHeader>
             <form onSubmit={handleCreate} className="space-y-4">
-              <div className="flex border-b border-border mb-4">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("general")}
-                  className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                    activeTab === "general"
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Detalles
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("notes")}
-                  className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                    activeTab === "notes"
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Descripción y Notas
-                </button>
-              </div>
+              <FormTabs
+                tabs={[
+                  { id: "general", label: "Detalles" },
+                  { id: "notes", label: "Descripción y Notas" },
+                ]}
+                activeTab={activeTab}
+                onTabChange={(tab) => setActiveTab(tab as "general" | "notes")}
+              />
 
               {activeTab === "general" && (
                 <div className="space-y-4 animate-in fade-in duration-200">

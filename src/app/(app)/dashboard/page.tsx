@@ -5,6 +5,38 @@ import { useProject } from "@/lib/project-context"
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import {
+  PRIORITY_COLORS as priorityColors,
+  TASK_STATUS_DOT as statusDot,
+} from "@/lib/constants"
+
+// ── Helpers ──
+const dayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
+const monthNames = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+
+function formatDateFull(d: Date) {
+  return `${d.getDate()} ${monthNames[d.getMonth()]}`
+}
+
+const approvalIcons: Record<string, string> = {
+  task_review: "📝",
+  vfx_rejected: "🎬",
+  script_review: "📄",
+  casting_unconfirmed: "🎭",
+  cut_review: "🎬",
+  deliverable_qc_failed: "❌",
+  adr_pending: "🎙️",
+}
+
+const approvalLabels: Record<string, string> = {
+  task_review: "Revisión",
+  vfx_rejected: "Rechazado",
+  script_review: "Revisión",
+  casting_unconfirmed: "Sin confirmar",
+  cut_review: "Corte",
+  deliverable_qc_failed: "QC Fallido",
+  adr_pending: "ADR Pend.",
+}
 
 // ── Types ──
 interface DashboardData {
@@ -47,48 +79,6 @@ function useDashboardData() {
     enabled: !!currentProjectId,
     staleTime: 30_000,
   })
-}
-
-// ── Helpers ──
-const dayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
-const monthNames = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
-
-function formatDateFull(d: Date) {
-  return `${d.getDate()} ${monthNames[d.getMonth()]}`
-}
-
-const priorityColors: Record<string, string> = {
-  LOW: "bg-gray-500/10 text-gray-400",
-  MEDIUM: "bg-blue-500/10 text-blue-400",
-  HIGH: "bg-orange-500/10 text-orange-400",
-  URGENT: "bg-red-500/10 text-red-400",
-}
-
-const statusDot: Record<string, string> = {
-  PENDING: "bg-yellow-500",
-  IN_PROGRESS: "bg-blue-500",
-  REVIEW: "bg-purple-500",
-  COMPLETED: "bg-green-500",
-}
-
-const approvalIcons: Record<string, string> = {
-  task_review: "📝",
-  vfx_rejected: "🎬",
-  script_review: "📄",
-  casting_unconfirmed: "🎭",
-  cut_review: "🎬",
-  deliverable_qc_failed: "❌",
-  adr_pending: "🎙️",
-}
-
-const approvalLabels: Record<string, string> = {
-  task_review: "Revisión",
-  vfx_rejected: "Rechazado",
-  script_review: "Revisión",
-  casting_unconfirmed: "Sin confirmar",
-  cut_review: "Corte",
-  deliverable_qc_failed: "QC Fallido",
-  adr_pending: "ADR Pend.",
 }
 
 // ── Progress bar ──

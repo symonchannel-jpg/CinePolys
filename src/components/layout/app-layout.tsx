@@ -13,17 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { ArchiveButton } from "@/components/ui/archive-button"
 import { Menu, Search, Plus, Pencil } from "lucide-react"
-
-const PRESET_COLORS = [
-  "#6366f1", // Indigo
-  "#8b5cf6", // Violet
-  "#f43f5e", // Rose
-  "#f59e0b", // Amber
-  "#10b981", // Emerald
-  "#0ea5e9", // Sky
-  "#ef4444", // Crimson
-  "#64748b", // Slate
-]
+import { ColorPicker } from "@/components/ui/color-picker"
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession()
@@ -198,35 +188,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     <Label>Nombre</Label>
                     <Input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Nombre del proyecto" />
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Color del proyecto</Label>
-                    <div className="flex flex-wrap gap-2 items-center">
-                      {PRESET_COLORS.map((color) => (
-                        <button
-                          key={color}
-                          type="button"
-                          onClick={() => setNewColor(color)}
-                          className="h-8 w-8 rounded-full border border-border cursor-pointer transition-all duration-200 hover:scale-110 flex items-center justify-center relative shrink-0"
-                          style={{ backgroundColor: color }}
-                        >
-                          {newColor === color && (
-                            <span className="h-2 w-2 rounded-full bg-white shadow-sm" />
-                          )}
-                        </button>
-                      ))}
-                      
-                      <label className="h-8 px-3 rounded-full border border-border bg-muted/40 hover:bg-muted text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-all duration-200 flex items-center gap-1.5 shrink-0 select-none">
-                        <input
-                          type="color"
-                          value={newColor}
-                          onChange={(e) => setNewColor(e.target.value)}
-                          className="sr-only"
-                        />
-                        <span className="h-3 w-3 rounded-full border border-border/50" style={{ backgroundColor: PRESET_COLORS.includes(newColor) ? "#ffffff" : newColor }} />
-                        Personalizado
-                      </label>
-                    </div>
-                  </div>
+                  <ColorPicker value={newColor} onChange={setNewColor} label="Color del proyecto" />
                   <div className="flex justify-end gap-3 pt-2">
                     <Button variant="outline" onClick={() => setCreateOpen(false)} className="animate-jelly">Cancelar</Button>
                     <Button onClick={handleCreateProject} className="animate-jelly">Crear</Button>
@@ -243,40 +205,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <DialogHeader>
               <DialogTitle>Editar proyecto</DialogTitle>
             </DialogHeader>
-            <div className="space-y-5">
-              <div className="space-y-2">
-                <Label>Nombre</Label>
-                <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Color del proyecto</Label>
-                <div className="flex flex-wrap gap-2 items-center">
-                  {PRESET_COLORS.map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      onClick={() => setEditColor(color)}
-                      className="h-8 w-8 rounded-full border border-border cursor-pointer transition-all duration-200 hover:scale-110 flex items-center justify-center relative shrink-0"
-                      style={{ backgroundColor: color }}
-                    >
-                      {editColor === color && (
-                        <span className="h-2 w-2 rounded-full bg-white shadow-sm" />
-                      )}
-                    </button>
-                  ))}
-                  
-                  <label className="h-8 px-3 rounded-full border border-border bg-muted/40 hover:bg-muted text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-all duration-200 flex items-center gap-1.5 shrink-0 select-none">
-                    <input
-                      type="color"
-                      value={editColor}
-                      onChange={(e) => setEditColor(e.target.value)}
-                      className="sr-only"
-                    />
-                    <span className="h-3 w-3 rounded-full border border-border/50" style={{ backgroundColor: PRESET_COLORS.includes(editColor) ? "#ffffff" : editColor }} />
-                    Personalizado
-                  </label>
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <Label>Nombre</Label>
+                  <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
                 </div>
-              </div>
+                <ColorPicker value={editColor} onChange={setEditColor} label="Color del proyecto" />
               <div className="flex justify-end gap-3 pt-2">
                 <Button variant="outline" onClick={() => setEditOpen(false)} className="animate-jelly">Cancelar</Button>
                 <Button onClick={handleUpdateProject} className="animate-jelly">Guardar</Button>

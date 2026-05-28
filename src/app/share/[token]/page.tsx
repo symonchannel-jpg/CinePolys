@@ -19,13 +19,7 @@ export default async function ShareCallSheetPage({
 
   if (!callSheet) notFound()
 
-  let content: any
-  try {
-    content = JSON.parse(callSheet.content)
-  } catch {
-    content = { text: callSheet.content }
-  }
-
+  const content = callSheet.content as any
   const isJson = content && typeof content === "object" && (content.crewCall || content.scenes || content.notes)
 
   return (

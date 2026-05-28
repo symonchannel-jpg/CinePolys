@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { useDailies, useCreateDaily, useArchiveDaily, useLocations, useCasting } from "@/lib/api-hooks"
+import { FormTabs } from "@/components/ui/form-tabs"
 import { useQueryClient } from "@tanstack/react-query"
 
 function DailiesPageContent() {
@@ -105,7 +106,7 @@ function DailiesPageContent() {
 
     await createDaily.mutateAsync({
       date: formDate,
-      content: JSON.stringify(callSheetData),
+      content: callSheetData,
       projectId: currentProjectId || "default-project"
     })
     
@@ -160,18 +161,11 @@ function DailiesPageContent() {
     archiveDaily.mutate(id)
   }
 
-  const renderCallSheetContent = (contentStr: string) => {
-    let data: any = null
-    try {
-      data = JSON.parse(contentStr)
-    } catch {
-      // Falls back to plain text
-    }
-
+  const renderCallSheetContent = (data: any) => {
     if (!data || typeof data !== "object" || (!data.crewCall && !data.scenes && !data.notes)) {
       return (
         <pre className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">
-          {contentStr}
+          {typeof data === "string" ? data : JSON.stringify(data, null, 2)}
         </pre>
       )
     }
@@ -319,52 +313,16 @@ function DailiesPageContent() {
 
             <form onSubmit={handleCreate} className="space-y-4">
               {/* Tab Navigation */}
-              <div className="flex border-b border-border mb-4">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("general")}
-                  className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                    activeTab === "general"
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  General
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("location")}
-                  className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                    activeTab === "location"
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Locación
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("casting")}
-                  className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                    activeTab === "casting"
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Casting
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("plan")}
-                  className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                    activeTab === "plan"
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Plan y Notas
-                </button>
-              </div>
+              <FormTabs
+                tabs={[
+                  { id: "general", label: "General" },
+                  { id: "location", label: "Locación" },
+                  { id: "casting", label: "Casting" },
+                  { id: "plan", label: "Plan y Notas" },
+                ]}
+                activeTab={activeTab}
+                onTabChange={(tab) => setActiveTab(tab as "general" | "location" | "casting" | "plan")}
+              />
 
               {/* Tab 1: General & Horarios */}
               {activeTab === "general" && (

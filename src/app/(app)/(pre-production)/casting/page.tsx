@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useCasting, useCreateCasting, useUpdateCasting, useArchiveCasting } from "@/lib/api-hooks"
+import { FormTabs } from "@/components/ui/form-tabs"
 
 interface CastingMember {
   id: string
@@ -151,31 +152,15 @@ export default function CastingPage() {
               <DialogHeader><DialogTitle>Añadir actor/actriz</DialogTitle></DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4">
                 
-                {/* Tab Navigation */}
-                <div className="flex border-b border-border mb-4">
-                  <button
-                    type="button"
-                    onClick={() => setActiveCreateTab("general")}
-                    className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                      activeCreateTab === "general"
-                        ? "border-primary text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    Perfil General
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveCreateTab("photo")}
-                    className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                      activeCreateTab === "photo"
-                        ? "border-primary text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    Fotografía
-                  </button>
-                </div>
+              {/* Tab Navigation */}
+              <FormTabs
+                tabs={[
+                  { id: "general", label: "Perfil General" },
+                  { id: "photo", label: "Fotografía" },
+                ]}
+                activeTab={activeCreateTab}
+                onTabChange={(tab) => setActiveCreateTab(tab as "general" | "photo")}
+              />
 
                 {activeCreateTab === "general" && (
                   <div className="space-y-4 animate-in fade-in duration-200">
@@ -327,30 +312,14 @@ export default function CastingPage() {
           <form onSubmit={handleEdit} className="space-y-4">
             
             {/* Tab Navigation */}
-            <div className="flex border-b border-border mb-4">
-              <button
-                type="button"
-                onClick={() => setActiveEditTab("general")}
-                className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                  activeEditTab === "general"
-                    ? "border-primary text-foreground"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Perfil General
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveEditTab("photo")}
-                className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                  activeEditTab === "photo"
-                    ? "border-primary text-foreground"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Fotografía
-              </button>
-            </div>
+            <FormTabs
+              tabs={[
+                { id: "general", label: "Perfil General" },
+                { id: "photo", label: "Fotografía" },
+              ]}
+              activeTab={activeEditTab}
+              onTabChange={(tab) => setActiveEditTab(tab as "general" | "photo")}
+            />
 
             {activeEditTab === "general" && (
               <div className="space-y-4 animate-in fade-in duration-200">

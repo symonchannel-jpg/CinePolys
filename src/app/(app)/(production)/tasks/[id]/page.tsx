@@ -13,29 +13,11 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SelectValueI18n } from "@/components/ui/select-i18n"
 import { useTask, useUpdateTask, useArchiveTask, useCreateComment } from "@/lib/api-hooks"
-
-const statusColors: Record<string, string> = {
-  PENDING: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
-  IN_PROGRESS: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-  REVIEW: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-  COMPLETED: "bg-green-500/10 text-green-500 border-green-500/20",
-  ARCHIVED: "bg-gray-500/10 text-gray-500 border-gray-500/20",
-}
-
-const statusLabels: Record<string, string> = {
-  PENDING: "Pendiente",
-  IN_PROGRESS: "En Progreso",
-  REVIEW: "Revisión",
-  COMPLETED: "Completada",
-  ARCHIVED: "Archivada",
-}
-
-const priorityLabels: Record<string, string> = {
-  LOW: "Baja",
-  MEDIUM: "Media",
-  HIGH: "Alta",
-  URGENT: "Urgente",
-}
+import {
+  TASK_STATUS_COLORS as statusColors,
+  TASK_STATUS_LABELS as statusLabels,
+  PRIORITY_LABELS as priorityLabels,
+} from "@/lib/constants"
 
 const actionLabels: Record<string, string> = {
   CREATED: "creó la tarea",

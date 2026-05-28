@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import dynamic from "next/dynamic"
 import { useLocations, useCreateLocation, useUpdateLocation, useArchiveLocation } from "@/lib/api-hooks"
+import { FormTabs } from "@/components/ui/form-tabs"
 
 const LocationMap = dynamic(() => import("@/components/modules/location-map").then((m) => m.LocationMap), {
   ssr: false,
@@ -97,7 +98,7 @@ export default function LocationsPage() {
     setFormDesc(loc.description || "")
     setFormLat(loc.lat)
     setFormLng(loc.lng)
-    setFormExistingImages(JSON.parse(loc.images || "[]"))
+    setFormExistingImages((loc.images as unknown as string[]) || [])
     setFormImages([])
     setEditing(true)
     setSelected(loc)
@@ -166,7 +167,7 @@ export default function LocationsPage() {
 
   function prevImage() {
     if (!galleryData) return
-    const imgs = JSON.parse(galleryData.loc.images || "[]")
+    const imgs = (galleryData.loc.images as unknown as string[]) || []
     setGalleryData({ ...galleryData, index: (galleryData.index - 1 + imgs.length) % imgs.length })
   }
 
@@ -224,42 +225,16 @@ export default function LocationsPage() {
               <DialogHeader><DialogTitle>{editing ? "Editar locación" : "Nueva locación"}</DialogTitle></DialogHeader>
               <form onSubmit={handleSave} className="space-y-4">
                 
-                {/* Tab Navigation */}
-                <div className="flex border-b border-border mb-4">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("general")}
-                    className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                      activeTab === "general"
-                        ? "border-primary text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    Información
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("map")}
-                    className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                      activeTab === "map"
-                        ? "border-primary text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    Mapa
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("gallery")}
-                    className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                      activeTab === "gallery"
-                        ? "border-primary text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    Galería
-                  </button>
-                </div>
+              {/* Tab Navigation */}
+              <FormTabs
+                tabs={[
+                  { id: "general", label: "Información" },
+                  { id: "map", label: "Mapa" },
+                  { id: "gallery", label: "Galería" },
+                ]}
+                activeTab={activeTab}
+                onTabChange={(tab) => setActiveTab(tab as "general" | "map" | "gallery")}
+              />
 
                 {activeTab === "general" && (
                   <div className="space-y-4 animate-in fade-in duration-200">
@@ -404,7 +379,7 @@ export default function LocationsPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {locations.map((loc: Location) => {
-            const imgs = JSON.parse(loc.images || "[]")
+            const imgs = (loc.images as unknown as string[]) || []
             const preview = imgs[0]
 
             return (
@@ -523,7 +498,7 @@ export default function LocationsPage() {
 
       {/* Image Gallery Carousel */}
       {galleryData && (() => {
-        const imgs = JSON.parse(galleryData.loc.images || "[]") as string[]
+        const imgs = (galleryData.loc.images as unknown as string[]) || []
         return (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm"

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
+import { TASK_STATUS_DOT as statusColors } from "@/lib/constants"
 
 interface CalendarTask {
   id: string
@@ -12,13 +13,6 @@ interface CalendarTask {
 
 interface Props {
   tasks: CalendarTask[]
-}
-
-const statusColors: Record<string, string> = {
-  PENDING: "bg-yellow-500",
-  IN_PROGRESS: "bg-blue-500",
-  REVIEW: "bg-purple-500",
-  COMPLETED: "bg-green-500",
 }
 
 const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]

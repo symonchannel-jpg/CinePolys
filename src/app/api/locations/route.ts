@@ -62,7 +62,7 @@ export async function POST(req: Request) {
       description: description || null,
       lat,
       lng,
-      images: JSON.stringify(savedImages),
+      images: savedImages,
       projectId: project.id,
     },
   })
@@ -90,7 +90,7 @@ export async function PUT(req: Request) {
   const existing = await prisma.location.findFirst({ where: { id, archivedAt: null } })
   if (!existing) return NextResponse.json({ error: "No encontrada" }, { status: 404 })
 
-  let savedImages: string[] = existingImagesRaw ? JSON.parse(existingImagesRaw) : JSON.parse(existing.images || "[]")
+  let savedImages: string[] = existingImagesRaw ? JSON.parse(existingImagesRaw) : (existing.images as string[]) || []
   await mkdir(LOCATIONS_UPLOAD_DIR, { recursive: true })
 
   for (const file of files) {
@@ -108,7 +108,7 @@ export async function PUT(req: Request) {
       ...(description !== undefined && { description }),
       lat,
       lng,
-      images: JSON.stringify(savedImages),
+      images: savedImages,
     },
   })
 

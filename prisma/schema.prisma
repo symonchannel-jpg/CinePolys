@@ -246,7 +246,7 @@ model Location {
   description String?
   lat         Float?
   lng         Float?
-  images      String   @default("[]")
+  images      Json     @default("[]")
   projectId   String
   project     Project  @relation(fields: [projectId], references: [id])
   archivedAt  DateTime?
@@ -313,7 +313,7 @@ model CallSheet {
   project     Project  @relation(fields: [projectId], references: [id])
   createdById String
   createdBy   User     @relation(fields: [createdById], references: [id])
-  content     String   @default("{}")
+  content     Json     @default("{}")
   shareToken  String?  @unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

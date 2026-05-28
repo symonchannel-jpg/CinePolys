@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SelectValueI18n } from "@/components/ui/select-i18n"
 import { Textarea } from "@/components/ui/textarea"
+import { FormTabs } from "@/components/ui/form-tabs"
 import {
   useTasks,
   useCreateTask,
@@ -20,36 +21,12 @@ import {
   useDepartments,
   useUsers,
 } from "@/lib/api-hooks"
-
-const statusColors: Record<string, string> = {
-  PENDING: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
-  IN_PROGRESS: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-  REVIEW: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-  COMPLETED: "bg-green-500/10 text-green-500 border-green-500/20",
-  ARCHIVED: "bg-gray-500/10 text-gray-500 border-gray-500/20",
-}
-
-const priorityColors: Record<string, string> = {
-  LOW: "bg-gray-500/10 text-gray-400",
-  MEDIUM: "bg-blue-500/10 text-blue-400",
-  HIGH: "bg-orange-500/10 text-orange-400",
-  URGENT: "bg-red-500/10 text-red-400",
-}
-
-const statusLabels: Record<string, string> = {
-  PENDING: "Pendiente",
-  IN_PROGRESS: "En Progreso",
-  REVIEW: "Revisión",
-  COMPLETED: "Completada",
-  ARCHIVED: "Archivada",
-}
-
-const priorityLabels: Record<string, string> = {
-  LOW: "Baja",
-  MEDIUM: "Media",
-  HIGH: "Alta",
-  URGENT: "Urgente",
-}
+import {
+  TASK_STATUS_COLORS as statusColors,
+  TASK_STATUS_LABELS as statusLabels,
+  PRIORITY_COLORS as priorityColors,
+  PRIORITY_LABELS as priorityLabels,
+} from "@/lib/constants"
 
 interface Task {
   id: string
@@ -170,30 +147,14 @@ export default function TasksPage() {
               <form onSubmit={handleCreate} className="space-y-4">
                 
                 {/* Tab Navigation */}
-                <div className="flex border-b border-border mb-4">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("general")}
-                    className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                      activeTab === "general"
-                        ? "border-primary text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    General
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("assign")}
-                    className={`flex-1 pb-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
-                      activeTab === "assign"
-                        ? "border-primary text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    Asignación y Fechas
-                  </button>
-                </div>
+                <FormTabs
+                  tabs={[
+                    { id: "general", label: "General" },
+                    { id: "assign", label: "Asignación y Fechas" },
+                  ]}
+                  activeTab={activeTab}
+                  onTabChange={(tab) => setActiveTab(tab as "general" | "assign")}
+                />
 
                 {activeTab === "general" && (
                   <div className="space-y-4 animate-in fade-in duration-200">
