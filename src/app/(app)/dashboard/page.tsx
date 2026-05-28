@@ -98,9 +98,9 @@ function Section({ title, badge, children, className = "", accent = false }: {
   return (
     <div className={cn("rounded-xl border border-border bg-card flex flex-col", className)}>
       <div className={cn("flex items-center justify-between px-5 py-3.5 border-b shrink-0", accent ? "border-b-primary/30 bg-primary/[0.02]" : "border-border")}>
-        <h2 className={cn("text-sm font-semibold", accent ? "text-primary" : "text-foreground")}>{title}</h2>
+        <h2 className={cn("text-sm font-semibold", accent ? "text-primary-text" : "text-foreground")}>{title}</h2>
         {badge !== undefined && (
-          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary/10 px-1.5 text-[10px] font-bold text-primary">
+          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary/10 px-1.5 text-[10px] font-bold text-primary-text">
             {badge}
           </span>
         )}
@@ -116,7 +116,7 @@ function EmptyState({ message, action }: { message: string; action?: { label: st
     <div className="flex flex-col items-center justify-center text-center h-full py-4">
       <p className="text-sm text-muted-foreground">{message}</p>
       {action && (
-        <Link href={action.href} className="text-xs text-primary hover:underline mt-2">
+        <Link href={action.href} className="text-xs text-primary-text hover:underline mt-2">
           {action.label}
         </Link>
       )}
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                   </Link>
                 ))}
                 {today.tasksDue > 5 && (
-                  <Link href="/tasks" className="text-xs text-primary hover:underline block pt-1">
+                  <Link href="/tasks" className="text-xs text-primary-text hover:underline block pt-1">
                     Ver {today.tasksDue - 5} más →
                   </Link>
                 )}
@@ -262,7 +262,7 @@ export default function DashboardPage() {
 
           <button
             onClick={() => setExpandedStatus(!expandedStatus)}
-            className="text-sm text-primary hover:underline flex items-center gap-1 pt-1 transition-colors cursor-pointer"
+            className="text-sm text-primary-text hover:underline flex items-center gap-1 pt-1 transition-colors cursor-pointer"
           >
             {expandedStatus ? "Mostrar menos ↑" : "Ver más indicadores →"}
           </button>
@@ -360,7 +360,7 @@ export default function DashboardPage() {
             </div>
             <div>
               {nextCallSheet && (
-                <Link href={`/dailies?expand=${nextCallSheet.id}`} className="text-sm text-primary hover:underline">
+                <Link href={`/dailies?expand=${nextCallSheet.id}`} className="text-sm text-primary-text hover:underline">
                   Ver call sheet →
                 </Link>
               )}
@@ -418,14 +418,14 @@ export default function DashboardPage() {
                     )}
                   >
                     {count > 0 && (
-                      <span className="absolute top-1 right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
+                      <span className="absolute top-1 right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary-text">
                         {count}
                       </span>
                     )}
-                    <p className={cn("text-xs font-medium", isToday ? "text-primary" : "text-muted-foreground")}>
+                    <p className={cn("text-xs font-medium", isToday ? "text-primary-text" : "text-muted-foreground")}>
                       {dayNames[date.getDay()]}
                     </p>
-                    <p className={cn("text-2xl font-bold", isToday ? "text-primary" : "text-foreground")}>
+                    <p className={cn("text-2xl font-bold", isToday ? "text-primary-text" : "text-foreground")}>
                       {date.getDate()}
                     </p>
                     {count > 0 ? (
@@ -459,7 +459,7 @@ export default function DashboardPage() {
             </div>
           )}
           <div className="pt-3 border-t border-border text-center shrink-0">
-            <Link href="/tasks" className="text-sm text-primary hover:underline">
+            <Link href="/tasks" className="text-sm text-primary-text hover:underline">
               Ver todas las tareas →
             </Link>
           </div>

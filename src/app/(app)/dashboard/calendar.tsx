@@ -136,7 +136,7 @@ export function DashboardCalendar({ tasks }: Props) {
                           </div>
                         ))}
                         {tasksForDay.length > 2 && (
-                          <span className="text-[10px] text-primary pl-1">+{tasksForDay.length - 2} más</span>
+                          <span className="text-[10px] text-primary-text pl-1">+{tasksForDay.length - 2} más</span>
                         )}
                       </div>
                     )}
