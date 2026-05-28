@@ -105,36 +105,36 @@ src/
 
 ## Roadmap
 
-### Seguridad
-- [ ] Middleware de autorización por rol en API routes
-- [ ] Validación de input con Zod en todos los endpoints
-- [ ] Notificaciones filtradas por proyecto (no spamear a todos)
-- [ ] Validar callbackUrl en login (open redirect)
-- [ ] Transacciones Prisma en operaciones multi-modelo
-- [ ] Rate limiting en API routes críticas
+### Security
+- [ ] Role-based authorization middleware for API routes
+- [ ] Input validation with Zod on all endpoints
+- [ ] Project-scoped notifications (avoid spamming all users)
+- [ ] Validate callbackUrl on login (open redirect)
+- [ ] Prisma transactions for multi-model operations
+- [ ] Rate limiting on critical API routes
 
-### UX / Interfaz
-- [ ] Paginación server-side con cursor-based
-- [ ] Sistema de toasts en lugar de `alert()` nativo
-- [ ] Deep links en search (/casting?focus=id)
-- [ ] Contador de filtrados vs total en headers
-- [ ] Accesibilidad: roles ARIA en tabs, keyboard nav en listas
-- [ ] Componente `<ColorPicker>` reutilizable
+### UX / Interface
+- [ ] Server-side cursor-based pagination
+- [ ] Toast system instead of native `alert()`
+- [ ] Deep links in search results (`/casting?focus=id`)
+- [ ] Filtered vs total counts in list headers
+- [ ] Accessibility: ARIA roles on tabs, keyboard nav on lists
+- [ ] Reusable `<ColorPicker>` component
 
-### Redundancias / Código
-- [ ] Constantes compartidas (statusColors, priorityLabels)
-- [ ] Componente `<FormTabs>` accesible con ARIA
-- [ ] Eliminar `any` types — tipado estricto en toda la app
-- [ ] Migrar `Location.images` y `CallSheet.content` a tipo Json nativo
+### Redundancies / Code Quality
+- [ ] Shared constants (statusColors, priorityLabels)
+- [ ] Accessible `<FormTabs>` component with ARIA
+- [ ] Eliminate `any` types — strict typing across the app
+- [ ] Migrate `Location.images` and `CallSheet.content` to native Json type
 
-### Rendimiento
-- [ ] Paralelizar queries del dashboard con `Promise.all`
-- [ ] Índices compuestos (`projectId + archivedAt + status`)
-- [ ] Batch notifications (evitar loop secuencial)
-- [ ] Redis para SSE bus (soportar múltiples instancias)
+### Performance
+- [ ] Parallelize dashboard queries with `Promise.all`
+- [ ] Composite indexes (`projectId + archivedAt + status`)
+- [ ] Batch notifications (avoid sequential loop)
+- [ ] Redis-based SSE bus (multi-instance support)
 
-### Arquitectura
-- [ ] Error boundaries globales por ruta (`error.tsx`)
-- [ ] Validación de schema con Zod en todos los endpoints
-- [ ] `Project.status` como enum en lugar de String libre
-- [ ] Eliminar dual schema (unificar SQLite / PostgreSQL)
+### Architecture
+- [ ] Global error boundaries per route (`error.tsx`)
+- [ ] Schema validation with Zod on all endpoints
+- [ ] `Project.status` as enum instead of free String
+- [ ] Unify SQLite / PostgreSQL schemas
