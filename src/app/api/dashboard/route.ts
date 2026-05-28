@@ -37,9 +37,9 @@ export async function GET(req: Request) {
     take: 10,
   })
 
-  // ── Blocked items (tasks blocked + breakdown blocked + vfx rejected) ──
-  const [blockedTasks, blockedBreakdown, rejectedVFX] = await Promise.all([
-    prisma.task.count({ where: { ...where, status: "REVIEW" } }),
+  // ── Items bloqueados (breakdown blocked + vfx rejected) ──
+  // Nota: Task no tiene status BLOCKED, REVIEW no equivale a bloqueado
+  const [blockedBreakdown, rejectedVFX] = await Promise.all([
     prisma.scriptBreakdownItem.count({ where: { script: { projectId }, archivedAt: null, status: "BLOCKED" } }),
     prisma.vFXShot.count({ where: { ...where, status: "REJECTED" } }),
   ])
@@ -257,13 +257,22 @@ export async function GET(req: Request) {
     console.error("Warning: Error fetching pending ADRs for dashboard", err)
   }
 
-  // ── Active members ──
+  // ── Active members (asignados o creadores de tareas en el proyecto) ──
   const activeMembers = await prisma.user.count({
-    where: { isActive: true, taskAssignments: { some: { task: { projectId, archivedAt: null } } } },
+    where: {
+      isActive: true,
+      OR: [
+        { taskAssignments: { some: { task: { projectId, archivedAt: null } } } },
+        { createdTasks: { some: { projectId, archivedAt: null } } },
+        { vfxShots: { some: { projectId, archivedAt: null } } },
+      ],
+    },
   })
 
-  // ── Departments count ──
-  const departmentsCount = await prisma.department.count()
+  // ── Departments count (solo con tareas en este proyecto) ──
+  const departmentsCount = await prisma.department.count({
+    where: { tasks: { some: { projectId, archivedAt: null } } },
+  })
 
   // ── Top 3 urgent tasks (by priority + due date) ──
   const urgentTasks = await prisma.task.findMany({
@@ -307,7 +316,7 @@ export async function GET(req: Request) {
         ...t,
         assignedTo: t.assignments.map((a: any) => a.user).filter(Boolean),
       })),
-      blockedCount: blockedTasks + blockedBreakdown + rejectedVFX,
+      blockedCount: blockedBreakdown + rejectedVFX,
       completedSinceYesterday,
     },
     nextCallSheet: nextCallSheet ? {

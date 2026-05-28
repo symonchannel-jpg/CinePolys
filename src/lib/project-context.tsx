@@ -148,17 +148,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   }
 
   const setProjectOrder = (order: string[] | ((prev: string[]) => string[])) => {
-    setProjectOrderState(prev => {
-      const next = typeof order === "function" ? order(prev) : order
-      sessionStorage.setItem(PROJECT_ORDER_KEY, JSON.stringify(next))
-      return next
-    })
-    const nextOrder = typeof order === "function" ? order(projectOrder) : order
+    const resolvedOrder = typeof order === "function" ? order(projectOrder) : order
+    setProjectOrderState(resolvedOrder)
+    sessionStorage.setItem(PROJECT_ORDER_KEY, JSON.stringify(resolvedOrder))
     if (!isLoadingPreferencesRef.current && userId) {
       fetch("/api/users/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectOrder: nextOrder }),
+        body: JSON.stringify({ projectOrder: resolvedOrder }),
       }).catch(() => {})
     }
   }

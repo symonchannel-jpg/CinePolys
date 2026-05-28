@@ -48,3 +48,4 @@ yarn-error.log*
 # backup folders
 /backup_*/
 /cinepolis_backup_*/
+banner.png

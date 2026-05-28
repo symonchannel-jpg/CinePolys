@@ -12,8 +12,19 @@ export async function logActivity(params: {
   userId: string
 }) {
   if (params.taskId) {
+    // Lookup projectId from task to keep ActivityLog directly queryable by project
+    let projectId = params.projectId
+    if (!projectId) {
+      const task = await prisma.task.findUnique({
+        where: { id: params.taskId },
+        select: { projectId: true },
+      })
+      projectId = task?.projectId || undefined
+    }
+
     await prisma.activityLog.create({
       data: {
+        projectId: projectId || null,
         taskId: params.taskId,
         action: params.action,
         details: params.details || null,
@@ -36,6 +47,7 @@ export async function logActivity(params: {
 
     await prisma.activityLog.create({
       data: {
+        projectId: params.projectId,
         action: params.action,
         details: params.details || null,
         userId: params.userId,

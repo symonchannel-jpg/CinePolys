@@ -99,27 +99,34 @@ export async function PUT(req: Request, props: { params: Promise<{ id: string }>
     })
   }
 
-  const task = await prisma.task.update({
-    where: { id },
-    data: {
-      ...(title !== undefined && { title }),
-      ...(description !== undefined && { description }),
-      ...(status !== undefined && { status }),
-      ...(priority !== undefined && { priority }),
-      ...(departmentId !== undefined && { departmentId }),
-      ...(dueDate !== undefined && { dueDate: dueDate ? new Date(dueDate) : null }),
-      ...(assignedToIds !== undefined && {
-        assignments: {
-          deleteMany: {},
-          create: assignedToIds.map((uid: string) => ({ userId: uid })),
-        },
-      }),
-    },
-    include: {
-      department: true,
-      assignments: { include: { user: { select: { id: true, name: true } } } },
-      createdBy: { select: { id: true, name: true } },
-    },
+  const [task] = await prisma.$transaction(async (tx) => {
+    if (assignedToIds !== undefined) {
+      await tx.taskAssignment.deleteMany({ where: { taskId: id } })
+      if (assignedToIds.length > 0) {
+        await tx.taskAssignment.createMany({
+          data: assignedToIds.map((uid: string) => ({ taskId: id, userId: uid })),
+        })
+      }
+    }
+
+    const updated = await tx.task.update({
+      where: { id },
+      data: {
+        ...(title !== undefined && { title }),
+        ...(description !== undefined && { description }),
+        ...(status !== undefined && { status }),
+        ...(priority !== undefined && { priority }),
+        ...(departmentId !== undefined && { departmentId }),
+        ...(dueDate !== undefined && { dueDate: dueDate ? new Date(dueDate) : null }),
+      },
+      include: {
+        department: true,
+        assignments: { include: { user: { select: { id: true, name: true } } } },
+        createdBy: { select: { id: true, name: true } },
+      },
+    })
+
+    return [updated]
   })
 
   return NextResponse.json({

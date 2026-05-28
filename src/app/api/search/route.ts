@@ -89,14 +89,18 @@ export async function GET(req: Request) {
       projectId,
       title: { contains: q },
     },
+    include: {
+      versions: { orderBy: { version: "desc" }, take: 1 },
+    },
     take: 5,
   })
   scripts.forEach((s: any) => {
+    const latestVersion = s.versions?.[0]?.version
     results.push({
       id: s.id,
       type: "Guión",
       title: s.title,
-      subtitle: `v${s.version}`,
+      subtitle: latestVersion ? `v${latestVersion}` : s.status,
       href: `/scripts`,
     })
   })

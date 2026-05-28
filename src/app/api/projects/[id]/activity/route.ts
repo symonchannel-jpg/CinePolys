@@ -12,16 +12,7 @@ export async function GET(req: Request, props: { params: Promise<{ id: string }>
   if (!project) return NextResponse.json({ error: "Proyecto no encontrado" }, { status: 404 })
 
   const activities = await prisma.activityLog.findMany({
-    where: {
-      OR: [
-        { task: { projectId: id } },
-        { script: { projectId: id } },
-        { casting: { projectId: id } },
-        { location: { projectId: id } },
-        { vfxShot: { projectId: id } },
-        { callSheet: { projectId: id } },
-      ],
-    },
+    where: { projectId: id },
     include: {
       user: { select: { id: true, name: true } },
       task: { select: { id: true, title: true } },

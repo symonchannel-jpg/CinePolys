@@ -102,3 +102,39 @@ src/
 - **Departments** — Team organization
 - **Post-production** — VFX tracking, cuts, ADR and deliverables
 - **Activity** — Real-time change history (SSE)
+
+## Roadmap
+
+### Seguridad
+- [ ] Middleware de autorización por rol en API routes
+- [ ] Validación de input con Zod en todos los endpoints
+- [ ] Notificaciones filtradas por proyecto (no spamear a todos)
+- [ ] Validar callbackUrl en login (open redirect)
+- [ ] Transacciones Prisma en operaciones multi-modelo
+- [ ] Rate limiting en API routes críticas
+
+### UX / Interfaz
+- [ ] Paginación server-side con cursor-based
+- [ ] Sistema de toasts en lugar de `alert()` nativo
+- [ ] Deep links en search (/casting?focus=id)
+- [ ] Contador de filtrados vs total en headers
+- [ ] Accesibilidad: roles ARIA en tabs, keyboard nav en listas
+- [ ] Componente `<ColorPicker>` reutilizable
+
+### Redundancias / Código
+- [ ] Constantes compartidas (statusColors, priorityLabels)
+- [ ] Componente `<FormTabs>` accesible con ARIA
+- [ ] Eliminar `any` types — tipado estricto en toda la app
+- [ ] Migrar `Location.images` y `CallSheet.content` a tipo Json nativo
+
+### Rendimiento
+- [ ] Paralelizar queries del dashboard con `Promise.all`
+- [ ] Índices compuestos (`projectId + archivedAt + status`)
+- [ ] Batch notifications (evitar loop secuencial)
+- [ ] Redis para SSE bus (soportar múltiples instancias)
+
+### Arquitectura
+- [ ] Error boundaries globales por ruta (`error.tsx`)
+- [ ] Validación de schema con Zod en todos los endpoints
+- [ ] `Project.status` como enum en lugar de String libre
+- [ ] Eliminar dual schema (unificar SQLite / PostgreSQL)
