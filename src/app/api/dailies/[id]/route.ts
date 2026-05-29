@@ -21,7 +21,7 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
   const sheet = await prisma.callSheet.update({
     where: { id },
     data: {
-      ...(date !== undefined && { date: new Date(date) }),
+      ...(date !== undefined && { date: new Date(parseInt(date.split("-")[0]), parseInt(date.split("-")[1]) - 1, parseInt(date.split("-")[2])) }),
       ...(content !== undefined && { content }),
     },
   })

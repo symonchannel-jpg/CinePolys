@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useSession } from "next-auth/react"
+import { useSearchParams } from "next/navigation"
 import { useProject } from "@/lib/project-context"
 import { Button } from "@/components/ui/button"
 import { ArchiveButton } from "@/components/ui/archive-button"
@@ -10,7 +11,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useCasting, useCreateCasting, useUpdateCasting, useArchiveCasting } from "@/lib/api-hooks"
-import { FormTabs } from "@/components/ui/form-tabs"
+import { FormTabs, tabpanelId, tabId } from "@/components/ui/form-tabs"
+import { PaginationControls } from "@/components/ui/pagination-controls"
 
 interface CastingMember {
   id: string
@@ -40,10 +42,29 @@ export default function CastingPage() {
   const role = session?.user?.role
   const canEdit = role === "ADMIN" || role === "HOD"
 
-  const { data: members = [], isLoading } = useCasting()
+  const [castingPage, setCastingPage] = useState(1)
+  const { data: castData, isLoading } = useCasting({ page: String(castingPage), limit: "20" })
+  const members = castData?.items || []
+  const castTotal = castData?.total || 0
+  const castTotalPages = castData?.totalPages || 1
   const createCasting = useCreateCasting()
   const updateCasting = useUpdateCasting()
   const archiveCasting = useArchiveCasting()
+
+  const searchParams = useSearchParams()
+  const focusId = searchParams.get("focus")
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({})
+
+  useEffect(() => {
+    if (focusId && members.length > 0) {
+      const match = members.find((m: CastingMember) => m.id === focusId)
+      if (match) {
+        const el = cardRefs.current[focusId]
+        el?.scrollIntoView({ behavior: "smooth", block: "center" })
+        el?.focus()
+      }
+    }
+  }, [focusId, members])
 
   const [openCreate, setOpenCreate] = useState(false)
   const [activeCreateTab, setActiveCreateTab] = useState<"general" | "photo">("general")
@@ -160,10 +181,11 @@ export default function CastingPage() {
                 ]}
                 activeTab={activeCreateTab}
                 onTabChange={(tab) => setActiveCreateTab(tab as "general" | "photo")}
+                prefix="create"
               />
 
                 {activeCreateTab === "general" && (
-                  <div className="space-y-4 animate-in fade-in duration-200">
+                  <div id={tabpanelId("general", "create")} role="tabpanel" aria-labelledby={tabId("general", "create")} className="space-y-4 animate-in fade-in duration-200">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Nombre</Label>
@@ -186,7 +208,7 @@ export default function CastingPage() {
                 )}
 
                 {activeCreateTab === "photo" && (
-                  <div className="space-y-4 animate-in fade-in duration-200">
+                  <div id={tabpanelId("photo", "create")} role="tabpanel" aria-labelledby={tabId("photo", "create")} className="space-y-4 animate-in fade-in duration-200">
                     <div className="space-y-2">
                       <Label>Foto de perfil (opcional)</Label>
                       <div
@@ -269,7 +291,12 @@ export default function CastingPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {members.map((m: CastingMember) => (
-            <div key={m.id} className="rounded-xl border border-border bg-card p-5 hover:bg-muted/30 transition-colors relative group">
+            <div
+              key={m.id}
+              ref={(el) => { cardRefs.current[m.id] = el }}
+              tabIndex={-1}
+              className={`rounded-xl border border-border bg-card p-5 hover:bg-muted/30 transition-colors relative group ${focusId === m.id ? "ring-2 ring-primary" : ""}`}
+            >
               {canEdit && (
                 <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Button size="icon" variant="outline" className="h-7 w-7 text-xs" onClick={() => handleEditOpen(m)} title="Editar">✏️</Button>
@@ -304,6 +331,7 @@ export default function CastingPage() {
           ))}
         </div>
       )}
+      <PaginationControls page={castingPage} totalPages={castTotalPages} total={castTotal} onPageChange={setCastingPage} />
 
       {/* Edit Dialog */}
       <Dialog open={openEdit} onOpenChange={(o) => { setOpenEdit(o); if (!o) setActiveEditTab("general"); }}>
@@ -319,10 +347,11 @@ export default function CastingPage() {
               ]}
               activeTab={activeEditTab}
               onTabChange={(tab) => setActiveEditTab(tab as "general" | "photo")}
+              prefix="edit"
             />
 
             {activeEditTab === "general" && (
-              <div className="space-y-4 animate-in fade-in duration-200">
+              <div id={tabpanelId("general", "edit")} role="tabpanel" aria-labelledby={tabId("general", "edit")} className="space-y-4 animate-in fade-in duration-200">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Nombre</Label>
@@ -345,7 +374,7 @@ export default function CastingPage() {
             )}
 
             {activeEditTab === "photo" && (
-              <div className="space-y-4 animate-in fade-in duration-200">
+              <div id={tabpanelId("photo", "edit")} role="tabpanel" aria-labelledby={tabId("photo", "edit")} className="space-y-4 animate-in fade-in duration-200">
                 <div className="space-y-2">
                   <Label>Foto de perfil (opcional)</Label>
                   <div

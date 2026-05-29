@@ -165,12 +165,17 @@ src/
 - [ ] Rate limiting on critical API routes
 
 ### UX / Interface
-- [ ] Server-side cursor-based pagination
-- [ ] Toast system instead of native `alert()`
-- [ ] Deep links in search results (`/casting?focus=id`)
-- [ ] Filtered vs total counts in list headers
+- [x] Server-side pagination (offset-based, 20 items/page)
+- [x] Toast system replacing native `alert()`
+- [x] Deep links in search results (`/casting?focus=id`)
+- [x] Server-side text search with debounce
+- [x] Filtered vs total counts in list headers
 - [x] Accessibility: ARIA roles on tabs, keyboard nav on lists
+- [x] Accessible `<Link>` elements replacing bare `div onClick`
+- [x] Confirmation dialog on filter clear
 - [x] Reusable `<ColorPicker>` component
+- [x] Fixed sidebar terminology (Clapperboard → Film, Llamados → Call Sheets, removed misleading notification badge)
+- [x] Fixed dashboard accordion nesting
 
 ### Redundancies / Code Quality
 - [x] Shared constants (statusColors, priorityLabels)

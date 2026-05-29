@@ -64,7 +64,7 @@ export async function GET(req: Request) {
     prisma.task.count({ where: { ...where, status: "COMPLETED", updatedAt: { gte: yesterdayStart } } }),
     // Next call sheet
     prisma.callSheet.findFirst({
-      where: { ...where, date: { gte: now } },
+      where: { ...where, date: { gte: todayStart } },
       include: { createdBy: { select: { name: true } } },
       orderBy: { date: "asc" },
     }),

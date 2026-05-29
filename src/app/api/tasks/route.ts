@@ -15,6 +15,7 @@ export async function GET(req: Request) {
   const departmentId = searchParams.get("departmentId")
   const assignedToId = searchParams.get("assignedToId")
   const projectId = searchParams.get("projectId") || "default-project"
+  const search = searchParams.get("search")
 
   const where: any = { archivedAt: null, projectId }
 
@@ -26,25 +27,54 @@ export async function GET(req: Request) {
   const role = session.user.role
   const userId = session.user.id
 
+  const andConditions: any[] = []
+  if (search) {
+    andConditions.push({
+      OR: [
+        { title: { contains: search } },
+        { description: { contains: search } },
+      ],
+    })
+  }
   if (role === "CREW") {
-    where.OR = [{ assignments: { some: { userId } } }, { createdById: userId }]
+    andConditions.push({
+      OR: [{ assignments: { some: { userId } } }, { createdById: userId }],
+    })
+  }
+  if (andConditions.length > 0) {
+    where.AND = andConditions
   }
 
-  const tasks = await prisma.task.findMany({
-    where,
-    include: {
-      department: true,
-      assignments: { include: { user: { select: { id: true, name: true } } } },
-      createdBy: { select: { id: true, name: true } },
-      _count: { select: { comments: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  })
+  const page = Math.max(1, parseInt(searchParams.get("page") || "1"))
+  const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")))
+  const skip = (page - 1) * limit
 
-  return NextResponse.json(tasks.map((t: any) => ({
-    ...t,
-    assignedTo: t.assignments.map((a: any) => a.user),
-  })))
+  const [tasks, total] = await Promise.all([
+    prisma.task.findMany({
+      where,
+      skip,
+      take: limit,
+      include: {
+        department: true,
+        assignments: { include: { user: { select: { id: true, name: true } } } },
+        createdBy: { select: { id: true, name: true } },
+        _count: { select: { comments: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.task.count({ where }),
+  ])
+
+  return NextResponse.json({
+    items: tasks.map((t: any) => ({
+      ...t,
+      assignedTo: t.assignments.map((a: any) => a.user),
+    })),
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  })
 }
 
 export async function POST(req: Request) {

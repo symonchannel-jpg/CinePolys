@@ -10,7 +10,8 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { SelectValueI18n, SelectI18n } from "@/components/ui/select-i18n"
 import { Textarea } from "@/components/ui/textarea"
-import { FormTabs } from "@/components/ui/form-tabs"
+import { FormTabs, tabpanelId, tabId } from "@/components/ui/form-tabs"
+import { PaginationControls } from "@/components/ui/pagination-controls"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useProject } from "@/lib/project-context"
 import {
@@ -123,7 +124,11 @@ function ScriptsPageContent() {
   const searchParams = useSearchParams()
   const focusId = searchParams.get("focus")
   const { currentProjectId } = useProject()
-  const { data: scripts = [], isLoading } = useScripts()
+  const [scriptsPage, setScriptsPage] = useState(1)
+  const { data: scriptsData, isLoading } = useScripts({ page: String(scriptsPage), limit: "20" })
+  const scripts = scriptsData?.items || []
+  const scriptsTotal = scriptsData?.total || 0
+  const scriptsTotalPages = scriptsData?.totalPages || 1
   const createScript = useCreateScript()
   const archiveScript = useArchiveScript()
   const updateScript = useUpdateScript()
@@ -285,6 +290,7 @@ function ScriptsPageContent() {
           ))}
         </div>
       )}
+      <PaginationControls page={scriptsPage} totalPages={scriptsTotalPages} total={scriptsTotal} onPageChange={setScriptsPage} />
     </div>
   )
 }
@@ -437,8 +443,10 @@ function ScriptOverview({ script }: { script: any }) {
 function ScriptBreakdown({ scriptId, script }: { scriptId: string; script: any }) {
   const [category, setCategory] = useState("")
   const { data: items = [], isLoading } = useScriptBreakdown(scriptId, category || undefined)
-  const { data: casting = [] } = useCasting()
-  const { data: locations = [] } = useLocations()
+  const { data: castData } = useCasting()
+  const { data: locData } = useLocations()
+  const casting = castData?.items || []
+  const locations = locData?.items || []
   const { data: tasks = [] } = useTasks()
   const createItem = useCreateBreakdownItem()
   const updateItem = useUpdateBreakdownItem()
@@ -555,7 +563,7 @@ function ScriptBreakdown({ scriptId, script }: { scriptId: string; script: any }
               />
 
               {activeTab === "general" && (
-                <div className="space-y-4 animate-in fade-in duration-200">
+                <div id={tabpanelId("general")} role="tabpanel" aria-labelledby={tabId("general")} className="space-y-4 animate-in fade-in duration-200">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Título</Label>
@@ -592,7 +600,7 @@ function ScriptBreakdown({ scriptId, script }: { scriptId: string; script: any }
               )}
 
               {activeTab === "notes" && (
-                <div className="space-y-4 animate-in fade-in duration-200">
+                <div id={tabpanelId("notes")} role="tabpanel" aria-labelledby={tabId("notes")} className="space-y-4 animate-in fade-in duration-200">
                   <div className="space-y-2">
                     <Label>Descripción</Label>
                     <Textarea value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="Descripción..." rows={4} />

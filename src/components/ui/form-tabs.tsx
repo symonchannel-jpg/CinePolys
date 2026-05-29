@@ -12,9 +12,18 @@ interface FormTabsProps {
   tabs: FormTab[]
   activeTab: string
   onTabChange: (tabId: string) => void
+  prefix?: string
 }
 
-export function FormTabs({ tabs, activeTab, onTabChange }: FormTabsProps) {
+export function tabpanelId(tabId: string, prefix?: string) {
+  return prefix ? `tabpanel-${prefix}-${tabId}` : `tabpanel-${tabId}`
+}
+
+export function tabId(tabId: string, prefix?: string) {
+  return prefix ? `tab-${prefix}-${tabId}` : `tab-${tabId}`
+}
+
+export function FormTabs({ tabs, activeTab, onTabChange, prefix }: FormTabsProps) {
   const currentIndex = tabs.findIndex((t) => t.id === activeTab)
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent, index: number) => {
@@ -41,15 +50,14 @@ export function FormTabs({ tabs, activeTab, onTabChange }: FormTabsProps) {
     >
       {tabs.map((tab, i) => {
         const isActive = activeTab === tab.id
-        const isFirst = i === 0
-        const isLast = i === tabs.length - 1
         return (
           <button
             key={tab.id}
+            id={tabId(tab.id, prefix)}
             type="button"
             role="tab"
             aria-selected={isActive}
-            aria-controls={`tabpanel-${tab.id}`}
+            aria-controls={tabpanelId(tab.id, prefix)}
             tabIndex={isActive ? 0 : -1}
             onClick={() => onTabChange(tab.id)}
             onKeyDown={(e) => handleKeyDown(e, i)}

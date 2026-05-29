@@ -134,7 +134,8 @@ export default function PostProductionHub() {
   const { data: shots = [], isLoading: isVFXLoading } = useVFXShots()
   const { data: adrs = [] } = usePostADRs()
   const { data: deliverables = [] } = usePostDeliverables()
-  const { data: castingMembers = [] } = useCasting()
+  const { data: castData } = useCasting()
+  const castingMembers = castData?.items || []
   const { data: users = [] } = useUsers()
 
   // Mutations

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react"
 import { useSession } from "next-auth/react"
+import { useSearchParams } from "next/navigation"
 import { useProject } from "@/lib/project-context"
 import { Button } from "@/components/ui/button"
 import { ArchiveButton } from "@/components/ui/archive-button"
@@ -11,7 +12,8 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import dynamic from "next/dynamic"
 import { useLocations, useCreateLocation, useUpdateLocation, useArchiveLocation } from "@/lib/api-hooks"
-import { FormTabs } from "@/components/ui/form-tabs"
+import { FormTabs, tabpanelId, tabId } from "@/components/ui/form-tabs"
+import { PaginationControls } from "@/components/ui/pagination-controls"
 
 const LocationMap = dynamic(() => import("@/components/modules/location-map").then((m) => m.LocationMap), {
   ssr: false,
@@ -39,7 +41,23 @@ export default function LocationsPage() {
   const role = session?.user?.role
   const canEdit = role === "ADMIN" || role === "HOD"
 
-  const { data: locations = [], isLoading } = useLocations()
+  const [locationsPage, setLocationsPage] = useState(1)
+  const { data: locData, isLoading } = useLocations({ page: String(locationsPage), limit: "20" })
+  const locations = locData?.items || []
+  const locTotal = locData?.total || 0
+  const locTotalPages = locData?.totalPages || 1
+
+  const searchParams = useSearchParams()
+  const focusId = searchParams.get("focus")
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({})
+
+  useEffect(() => {
+    if (focusId && locations.length > 0) {
+      const el = cardRefs.current[focusId]
+      el?.scrollIntoView({ behavior: "smooth", block: "center" })
+      el?.focus()
+    }
+  }, [focusId, locations])
   const createLocation = useCreateLocation()
   const updateLocation = useUpdateLocation()
   const archiveLocation = useArchiveLocation()
@@ -161,7 +179,7 @@ export default function LocationsPage() {
 
   function nextImage() {
     if (!galleryData) return
-    const imgs = JSON.parse(galleryData.loc.images || "[]")
+    const imgs = (galleryData.loc.images as string[]) || []
     setGalleryData({ ...galleryData, index: (galleryData.index + 1) % imgs.length })
   }
 
@@ -237,7 +255,7 @@ export default function LocationsPage() {
               />
 
                 {activeTab === "general" && (
-                  <div className="space-y-4 animate-in fade-in duration-200">
+                  <div id={tabpanelId("general")} role="tabpanel" aria-labelledby={tabId("general")} className="space-y-4 animate-in fade-in duration-200">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Nombre</Label>
@@ -257,7 +275,7 @@ export default function LocationsPage() {
                 )}
 
                 {activeTab === "map" && (
-                  <div className="space-y-4 animate-in fade-in duration-200">
+                  <div id={tabpanelId("map")} role="tabpanel" aria-labelledby={tabId("map")} className="space-y-4 animate-in fade-in duration-200">
                     <div className="space-y-2">
                       <Label>Ubicación en el mapa</Label>
                       <LocationMap
@@ -276,7 +294,7 @@ export default function LocationsPage() {
                 )}
 
                 {activeTab === "gallery" && (
-                  <div className="space-y-4 animate-in fade-in duration-200">
+                  <div id={tabpanelId("gallery")} role="tabpanel" aria-labelledby={tabId("gallery")} className="space-y-4 animate-in fade-in duration-200">
                     <div className="space-y-2">
                       <Label>Imágenes</Label>
                       <div
@@ -385,7 +403,9 @@ export default function LocationsPage() {
             return (
               <div
                 key={loc.id}
-                className="group rounded-xl border border-border bg-card overflow-hidden transition-colors hover:bg-muted/20"
+                ref={(el) => { cardRefs.current[loc.id] = el }}
+                tabIndex={-1}
+                className={`group rounded-xl border border-border bg-card overflow-hidden transition-colors hover:bg-muted/20 ${focusId === loc.id ? "ring-2 ring-primary" : ""}`}
               >
                 <div className="relative">
                   {preview ? (
@@ -495,6 +515,7 @@ export default function LocationsPage() {
           })}
         </div>
       )}
+      <PaginationControls page={locationsPage} totalPages={locTotalPages} total={locTotal} onPageChange={setLocationsPage} />
 
       {/* Image Gallery Carousel */}
       {galleryData && (() => {

@@ -129,7 +129,6 @@ export default function DashboardPage() {
   const { currentProjectId } = useProject()
   const { data, isLoading, isError, error, refetch } = useDashboardData()
   const [expandedStatus, setExpandedStatus] = useState(false)
-  const [expandedPostProd, setExpandedPostProd] = useState(false)
 
   if (!currentProjectId) {
     return (
@@ -276,30 +275,9 @@ export default function DashboardPage() {
           >
             <div className="overflow-hidden">
               <div className="space-y-4 animate-in fade-in duration-200">
-                {/* Post-Producción group — collapsible secondary container */}
-                <div className="rounded-lg border border-border overflow-hidden">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setExpandedPostProd(!expandedPostProd) }}
-                    className="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-colors cursor-pointer"
-                  >
-                    <span className="text-xs font-mono transition-transform duration-200">{expandedPostProd ? "▼" : "▶"}</span>
-                    Post-Producción
-                    {!expandedPostProd && (
-                      <span className="ml-auto text-xs text-muted-foreground/60">
-                        {[stats.totalCuts > 0, stats.totalVFX > 0, stats.totalDeliverables > 0].filter(Boolean).length} métricas
-                      </span>
-                    )}
-                  </button>
-
-                  <div
-                    className={`grid transition-all duration-300 ease-in-out ${
-                      expandedPostProd
-                        ? "grid-rows-[1fr] opacity-100"
-                        : "grid-rows-[0fr] opacity-0"
-                    }`}
-                  >
-                    <div className="overflow-hidden">
-                      <div className="px-3 pb-3 space-y-3 pt-1 animate-in fade-in duration-200">
+                {/* Post-Producción — always visible when expanded */}
+                <div>
+                  <p className="text-sm font-semibold text-foreground mb-3">Post-Producción</p>
                         {stats.totalCuts > 0 && (
                           <div>
                             <div className="flex items-center justify-between mb-1.5">
@@ -332,9 +310,6 @@ export default function DashboardPage() {
                             <ProgressBar value={stats.approvedDeliverables} max={stats.totalDeliverables} color="bg-indigo-500" />
                           </div>
                         )}
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -355,7 +330,6 @@ export default function DashboardPage() {
               <p className="text-4xl font-bold text-foreground">{formatDateFull(nextShootDate)}</p>
               <p className="text-base text-muted-foreground mt-1.5">
                 {daysUntilShoot === 0 ? "¡Es hoy!" : daysUntilShoot === 1 ? "Mañana" : `En ${daysUntilShoot} días`}
-                {" · "}{nextShootDate.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" })}
               </p>
             </div>
             <div>

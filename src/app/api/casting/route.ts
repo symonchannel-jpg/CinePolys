@@ -15,12 +15,20 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url)
   const projectId = searchParams.get("projectId") || "default-project"
+  const page = Math.max(1, parseInt(searchParams.get("page") || "1"))
+  const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")))
+  const skip = (page - 1) * limit
 
-  const members = await prisma.castingMember.findMany({
-    where: { archivedAt: null, projectId },
-    orderBy: { createdAt: "desc" },
-  })
-  return NextResponse.json(members)
+  const [members, total] = await Promise.all([
+    prisma.castingMember.findMany({
+      where: { archivedAt: null, projectId },
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.castingMember.count({ where: { archivedAt: null, projectId } }),
+  ])
+  return NextResponse.json({ items: members, total, page, limit, totalPages: Math.ceil(total / limit) })
 }
 
 export async function POST(req: Request) {

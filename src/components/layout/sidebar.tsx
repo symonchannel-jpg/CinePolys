@@ -7,7 +7,6 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { ProjectBackupRestore } from "./project-backup-restore"
 import { AvatarSelector } from "./avatar-selector"
-import { useNotificationCount } from "@/lib/api-hooks"
 import {
   LayoutDashboard,
   FolderKanban,
@@ -17,7 +16,7 @@ import {
   CheckSquare,
   ClipboardList,
   Building2,
-  Clapperboard,
+  Film,
   Activity,
   Trash2,
   HelpCircle,
@@ -59,14 +58,14 @@ const navItems: NavGroup[] = [
     section: "Producción",
     items: [
       { label: "Tareas", href: "/tasks", icon: CheckSquare, roles: ["ADMIN", "HOD", "CREW"] },
-      { label: "Llamados", href: "/dailies", icon: ClipboardList, roles: ["ADMIN", "HOD"] },
+      { label: "Call Sheets", href: "/dailies", icon: ClipboardList, roles: ["ADMIN", "HOD"] },
       { label: "Departamentos", href: "/departments", icon: Building2, roles: ["ADMIN", "HOD"] },
     ],
   },
   {
     section: "Post-producción",
     items: [
-      { label: "Post-prod.", href: "/vfx-tracking", icon: Clapperboard, roles: ["ADMIN", "HOD"] },
+      { label: "Post-prod.", href: "/vfx-tracking", icon: Film, roles: ["ADMIN", "HOD"] },
     ],
   },
   {
@@ -90,7 +89,6 @@ export function Sidebar({ open, onToggle }: { open: boolean; onToggle: () => voi
   const pathname = usePathname()
   const { data: session } = useSession()
   const role = session?.user?.role || "CREW"
-  const { data: notifCount = 0 } = useNotificationCount()
   const [animating, setAnimating] = useState(false)
 
   const handleToggle = () => {
@@ -133,7 +131,6 @@ export function Sidebar({ open, onToggle }: { open: boolean; onToggle: () => voi
               <div className="space-y-0.5">
                 {visible.map((item) => {
                   const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
-                  const hasNotif = item.href === "/tasks" && notifCount > 0
                   return (
                     <Link
                       key={item.href}
@@ -157,15 +154,6 @@ export function Sidebar({ open, onToggle }: { open: boolean; onToggle: () => voi
                       >
                         {item.label}
                       </span>
-                      {hasNotif && (
-                        <span
-                          className={`flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground transition-all duration-300 ${
-                            open ? "max-w-10 opacity-100" : "max-w-0 opacity-0"
-                          }`}
-                        >
-                          {notifCount > 99 ? "99+" : notifCount}
-                        </span>
-                      )}
                     </Link>
                   )
                 })}

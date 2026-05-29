@@ -59,6 +59,9 @@ export function useTasks(filters?: Record<string, string | undefined>) {
   if (filters?.status) params.set("status", filters.status)
   if (filters?.priority) params.set("priority", filters.priority)
   if (filters?.departmentId) params.set("departmentId", filters.departmentId)
+  if (filters?.search) params.set("search", filters.search)
+  if (filters?.page) params.set("page", filters.page)
+  if (filters?.limit) params.set("limit", filters.limit)
 
   return useQuery({
     queryKey: ["tasks", params.toString()],
@@ -113,13 +116,15 @@ export function useArchiveTask() {
 
 // ─── Casting ────────────────────────────────────────────────────────────────
 
-export function useCasting() {
+export function useCasting(filters?: Record<string, string | undefined>) {
   const { currentProjectId } = useProject()
   const params = new URLSearchParams()
   if (currentProjectId) params.set("projectId", currentProjectId)
+  if (filters?.page) params.set("page", filters.page)
+  if (filters?.limit) params.set("limit", filters.limit)
 
   return useQuery({
-    queryKey: ["casting", currentProjectId],
+    queryKey: ["casting", params.toString()],
     queryFn: () => fetch(`/api/casting?${params}`).then((r) => r.json()),
     staleTime: 30_000,
   })
@@ -153,13 +158,15 @@ export function useArchiveCasting() {
 
 // ─── Locations ──────────────────────────────────────────────────────────────
 
-export function useLocations() {
+export function useLocations(filters?: Record<string, string | undefined>) {
   const { currentProjectId } = useProject()
   const params = new URLSearchParams()
   if (currentProjectId) params.set("projectId", currentProjectId)
+  if (filters?.page) params.set("page", filters.page)
+  if (filters?.limit) params.set("limit", filters.limit)
 
   return useQuery({
-    queryKey: ["locations", currentProjectId],
+    queryKey: ["locations", params.toString()],
     queryFn: () => fetch(`/api/locations?${params}`).then((r) => r.json()),
     staleTime: 30_000,
   })
@@ -193,13 +200,15 @@ export function useArchiveLocation() {
 
 // ─── Scripts ────────────────────────────────────────────────────────────────
 
-export function useScripts() {
+export function useScripts(filters?: Record<string, string | undefined>) {
   const { currentProjectId } = useProject()
   const params = new URLSearchParams()
   if (currentProjectId) params.set("projectId", currentProjectId)
+  if (filters?.page) params.set("page", filters.page)
+  if (filters?.limit) params.set("limit", filters.limit)
 
   return useQuery({
-    queryKey: ["scripts", currentProjectId],
+    queryKey: ["scripts", params.toString()],
     queryFn: () => fetch(`/api/scripts?${params}`).then((r) => r.json()),
     staleTime: 30_000,
   })

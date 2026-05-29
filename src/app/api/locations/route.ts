@@ -15,12 +15,20 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url)
   const projectId = searchParams.get("projectId") || "default-project"
+  const page = Math.max(1, parseInt(searchParams.get("page") || "1"))
+  const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")))
+  const skip = (page - 1) * limit
 
-  const locations = await prisma.location.findMany({
-    where: { archivedAt: null, projectId },
-    orderBy: { name: "asc" },
-  })
-  return NextResponse.json(locations)
+  const [locations, total] = await Promise.all([
+    prisma.location.findMany({
+      where: { archivedAt: null, projectId },
+      skip,
+      take: limit,
+      orderBy: { name: "asc" },
+    }),
+    prisma.location.count({ where: { archivedAt: null, projectId } }),
+  ])
+  return NextResponse.json({ items: locations, total, page, limit, totalPages: Math.ceil(total / limit) })
 }
 
 export async function POST(req: Request) {

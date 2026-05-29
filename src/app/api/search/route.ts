@@ -44,16 +44,16 @@ export async function GET(req: Request) {
     results.push({ id: t.id, type: "Tarea", title: t.title, subtitle: t.status, href: `/tasks/${t.id}` })
   })
   casting.forEach((c: any) => {
-    results.push({ id: c.id, type: "Actor", title: c.name, subtitle: c.character || undefined, href: `/casting` })
+    results.push({ id: c.id, type: "Actor", title: c.name, subtitle: c.character || undefined, href: `/casting?focus=${c.id}` })
   })
   locations.forEach((l: any) => {
-    results.push({ id: l.id, type: "Locación", title: l.name, subtitle: l.address || undefined, href: `/locations` })
+    results.push({ id: l.id, type: "Locación", title: l.name, subtitle: l.address || undefined, href: `/locations?focus=${l.id}` })
   })
   scripts.forEach((s: any) => {
     const latestVersion = s.versions?.[0]?.version
     results.push({
       id: s.id, type: "Guión", title: s.title,
-      subtitle: latestVersion ? `v${latestVersion}` : s.status, href: `/scripts`,
+      subtitle: latestVersion ? `v${latestVersion}` : s.status, href: `/scripts?focus=${s.id}`,
     })
   })
   users.forEach((u: any) => {

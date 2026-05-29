@@ -10,14 +10,16 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { useDailies, useCreateDaily, useArchiveDaily, useLocations, useCasting } from "@/lib/api-hooks"
-import { FormTabs } from "@/components/ui/form-tabs"
+import { FormTabs, tabpanelId, tabId } from "@/components/ui/form-tabs"
 import { useQueryClient } from "@tanstack/react-query"
 
 function DailiesPageContent() {
   const { currentProjectId } = useProject()
   const { data: sheets = [], isLoading } = useDailies()
-  const { data: locations = [] } = useLocations()
-  const { data: castingMembers = [] } = useCasting()
+  const { data: locData } = useLocations()
+  const { data: castData } = useCasting()
+  const locations = locData?.items || []
+  const castingMembers = castData?.items || []
 
   const createDaily = useCreateDaily()
   const archiveDaily = useArchiveDaily()
@@ -326,7 +328,7 @@ function DailiesPageContent() {
 
               {/* Tab 1: General & Horarios */}
               {activeTab === "general" && (
-                <div className="space-y-4 animate-in fade-in duration-200">
+                <div id={tabpanelId("general")} role="tabpanel" aria-labelledby={tabId("general")} className="space-y-4 animate-in fade-in duration-200">
                   <div className="space-y-2">
                     <Label htmlFor="formDate">Fecha de Rodaje</Label>
                     <Input id="formDate" type="date" value={formDate} onChange={(e) => setFormDate(e.target.value)} required />
@@ -350,7 +352,7 @@ function DailiesPageContent() {
 
               {/* Tab 2: Locación */}
               {activeTab === "location" && (
-                <div className="space-y-4 animate-in fade-in duration-200">
+                <div id={tabpanelId("location")} role="tabpanel" aria-labelledby={tabId("location")} className="space-y-4 animate-in fade-in duration-200">
                   <div className="space-y-2">
                     <Label htmlFor="selectedLocationId">Locación Principal del Proyecto</Label>
                     <select
@@ -382,7 +384,7 @@ function DailiesPageContent() {
 
               {/* Tab 3: Casting Convocado */}
               {activeTab === "casting" && (
-                <div className="space-y-4 animate-in fade-in duration-200">
+                <div id={tabpanelId("casting")} role="tabpanel" aria-labelledby={tabId("casting")} className="space-y-4 animate-in fade-in duration-200">
                   <div className="space-y-2">
                     <Label>Seleccionar Reparto y Citación Individual</Label>
                     <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 scrollbar-none">
@@ -451,7 +453,7 @@ function DailiesPageContent() {
 
               {/* Tab 4: Plan y Notas */}
               {activeTab === "plan" && (
-                <div className="space-y-4 animate-in fade-in duration-200">
+                <div id={tabpanelId("plan")} role="tabpanel" aria-labelledby={tabId("plan")} className="space-y-4 animate-in fade-in duration-200">
                   <div className="space-y-2">
                     <Label htmlFor="scenesText">Escenas a Rodar</Label>
                     <Textarea

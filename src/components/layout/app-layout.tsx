@@ -12,10 +12,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { ArchiveButton } from "@/components/ui/archive-button"
+import { ToastProvider, useToast } from "@/components/ui/toast"
 import { Menu, Search, Plus, Pencil } from "lucide-react"
 import { ColorPicker } from "@/components/ui/color-picker"
 
-export function AppLayout({ children }: { children: React.ReactNode }) {
+function AppLayoutInner({ children }: { children: React.ReactNode }) {
+  const { toast } = useToast()
   const { data: session } = useSession()
   const { currentProjectId, setCurrentProjectId, projects, refreshProjects, currentProject, projectOrder, setProjectOrder } = useProject()
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -59,7 +61,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       setEditOpen(false)
       refreshProjects()
     } else {
-      alert("Error al actualizar proyecto")
+      toast({ title: "Error al actualizar proyecto", variant: "error" })
     }
   }
 
@@ -75,7 +77,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       setNewName("")
       refreshProjects()
     } else {
-      alert("Error al crear proyecto")
+      toast({ title: "Error al crear proyecto", variant: "error" })
     }
   }
 
@@ -274,5 +276,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       </div>
       <Omnibar />
     </div>
+  )
+}
+
+export function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ToastProvider>
+      <AppLayoutInner>{children}</AppLayoutInner>
+    </ToastProvider>
   )
 }

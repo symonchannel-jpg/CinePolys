@@ -1,19 +1,21 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { useProject } from "@/lib/project-context"
 import { Button } from "@/components/ui/button"
 import { ArchiveButton } from "@/components/ui/archive-button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SelectValueI18n } from "@/components/ui/select-i18n"
 import { Textarea } from "@/components/ui/textarea"
-import { FormTabs } from "@/components/ui/form-tabs"
+import { FormTabs, tabpanelId, tabId } from "@/components/ui/form-tabs"
+import { PaginationControls } from "@/components/ui/pagination-controls"
 import {
   useTasks,
   useCreateTask,
@@ -46,15 +48,16 @@ interface Task {
 export default function TasksPage() {
   const { data: session } = useSession()
   const { currentProjectId } = useProject()
-  const router = useRouter()
   const role = session?.user?.role
   const canCreate = role === "ADMIN" || role === "HOD"
 
+  const [searchInput, setSearchInput] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [filterStatus, setFilterStatus] = useState("")
   const [filterPriority, setFilterPriority] = useState("")
   const [filterDept, setFilterDept] = useState("")
-
+  const [confirmClear, setConfirmClear] = useState(false)
+  const [page, setPage] = useState(1)
   const [createOpen, setCreateOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<"general" | "assign">("general")
   const [formTitle, setFormTitle] = useState("")
@@ -66,11 +69,22 @@ export default function TasksPage() {
   const [formDueDate, setFormDueDate] = useState("")
   const [formError, setFormError] = useState("")
 
-  const { data: tasks = [], isLoading } = useTasks({
+  useEffect(() => {
+    const timer = setTimeout(() => setSearchQuery(searchInput), 300)
+    return () => clearTimeout(timer)
+  }, [searchInput])
+
+  const { data: tasksData, isLoading } = useTasks({
     status: filterStatus || undefined,
     priority: filterPriority || undefined,
     departmentId: filterDept || undefined,
+    search: searchQuery || undefined,
+    page: String(page),
+    limit: "20",
   })
+  const tasks = tasksData?.items || []
+  const total = tasksData?.total || 0
+  const totalPages = tasksData?.totalPages || 1
 
   const { data: departments = [] } = useDepartments()
   const { data: users = [] } = useUsers()
@@ -124,10 +138,6 @@ export default function TasksPage() {
     setActiveTab("general")
   }
 
-  const filtered = tasks.filter((t: { title: string }) =>
-    !searchQuery || t.title.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -157,7 +167,7 @@ export default function TasksPage() {
                 />
 
                 {activeTab === "general" && (
-                  <div className="space-y-4 animate-in fade-in duration-200">
+                  <div id={tabpanelId("general")} role="tabpanel" aria-labelledby={tabId("general")} className="space-y-4 animate-in fade-in duration-200">
                     <div className="space-y-2">
                       <Label htmlFor="title">Título</Label>
                       <Input id="title" value={formTitle} onChange={(e) => setFormTitle(e.target.value)} placeholder="Nombre de la tarea" />
@@ -200,7 +210,7 @@ export default function TasksPage() {
                 )}
 
                 {activeTab === "assign" && (
-                  <div className="space-y-4 animate-in fade-in duration-200">
+                  <div id={tabpanelId("assign")} role="tabpanel" aria-labelledby={tabId("assign")} className="space-y-4 animate-in fade-in duration-200">
                     <div className="space-y-2">
                       <Label>Asignar a</Label>
                       <div className="rounded-md border border-input bg-background p-3 max-h-[300px] overflow-y-auto space-y-2">
@@ -267,8 +277,8 @@ export default function TasksPage() {
       <div className="flex flex-wrap gap-3">
         <Input
           placeholder="Buscar tareas..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
           className="max-w-xs"
         />
         <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v || "")}>
@@ -300,27 +310,34 @@ export default function TasksPage() {
             ))}
           </SelectContent>
         </Select>
-        <Button variant="ghost" size="sm" onClick={() => { setFilterStatus(""); setFilterPriority(""); setFilterDept(""); setSearchQuery("") }}>
+        <Button variant="ghost" size="sm" onClick={() => setConfirmClear(true)}>
           Limpiar
         </Button>
+        <ConfirmDialog
+          open={confirmClear}
+          onOpenChange={setConfirmClear}
+          title="Limpiar filtros"
+          message="¿Restablecer todos los filtros?"
+          confirmLabel="Limpiar"
+          onConfirm={() => { setFilterStatus(""); setFilterPriority(""); setFilterDept(""); setSearchInput("") }}
+          variant="default"
+        />
       </div>
 
       {isLoading ? (
         <div className="text-center py-12 text-muted-foreground">Cargando...</div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">
-          {tasks.length === 0 ? "No hay tareas aún" : "Sin resultados para los filtros actuales"}
-        </div>
+      ) : tasks.length === 0 ? (
+        <div className="text-center py-12 text-muted-foreground">Sin resultados para los filtros actuales</div>
       ) : (
         <div className="space-y-2">
-          {filtered.map((task: Task) => (
+          {tasks.map((task: Task) => (
             <div
               key={task.id}
               className="group flex items-center gap-4 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-muted/50 animate-jelly"
             >
-              <div
-                className="flex-1 min-w-0 cursor-pointer"
-                onClick={() => router.push(`/tasks/${task.id}`)}
+              <Link
+                href={`/tasks/${task.id}`}
+                className="flex-1 min-w-0"
               >
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-foreground truncate">{task.title}</span>
@@ -339,7 +356,7 @@ export default function TasksPage() {
                   {task.dueDate && <span>Vence: {new Date(task.dueDate).toLocaleDateString("es")}</span>}
                   <span>{task._count.comments} comentario{task._count.comments !== 1 ? "s" : ""}</span>
                 </div>
-              </div>
+              </Link>
               {canCreate && (
                 <div onClick={(e) => e.stopPropagation()}>
                   <ArchiveButton
@@ -356,6 +373,7 @@ export default function TasksPage() {
           ))}
         </div>
       )}
+      <PaginationControls page={page} totalPages={totalPages} total={total} onPageChange={setPage} />
     </div>
   )
 }
