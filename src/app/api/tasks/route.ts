@@ -107,15 +107,15 @@ export async function POST(req: Request) {
   })
 
   if (assignedToIds?.length) {
-    for (const uid of assignedToIds) {
-      await notifyUser({
+    await Promise.all(assignedToIds.map((uid: string) =>
+      notifyUser({
         userId: uid,
         title: `Tarea asignada: ${title}`,
         message: `${creatorName} te asignó "${title}"`,
         type: "task_assigned",
         link: `/tasks/${task.id}`,
       })
-    }
+    ))
   }
 
   return NextResponse.json({

@@ -160,6 +160,8 @@ model Task {
   activities   ActivityLog[]
   assignments  TaskAssignment[]
   scriptItems  ScriptBreakdownItem[]
+
+  @@index([projectId, archivedAt, status])
 }
 
 model TaskAssignment {
@@ -200,6 +202,8 @@ model Script {
   versions      ScriptVersion[]
   breakdown     ScriptBreakdownItem[]
   activities    ActivityLog[]
+
+  @@index([projectId, archivedAt])
 }
 
 model ScriptVersion {
@@ -252,6 +256,8 @@ model Location {
   archivedAt  DateTime?
 
   activities  ActivityLog[]
+
+  @@index([projectId, archivedAt])
 }
 
 model CastingMember {
@@ -269,6 +275,8 @@ model CastingMember {
 
   activities      ActivityLog[]
   postADRs        PostADR[]
+
+  @@index([projectId, archivedAt])
 }
 
 model ActivityLog {
@@ -292,6 +300,8 @@ model ActivityLog {
   userId       String
   user         User     @relation(fields: [userId], references: [id])
   createdAt    DateTime @default(now())
+
+  @@index([projectId, createdAt])
 }
 
 model Notification {
@@ -304,6 +314,8 @@ model Notification {
   link      String?
   read      Boolean   @default(false)
   createdAt DateTime  @default(now())
+
+  @@index([userId, read])
 }
 
 model CallSheet {
@@ -340,6 +352,8 @@ model VFXShot {
   archivedAt   DateTime?
 
   activities   ActivityLog[]
+
+  @@index([projectId, archivedAt, status])
 }
 
 enum DeliverableStatus {

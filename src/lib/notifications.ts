@@ -1,14 +1,29 @@
 import { prisma } from "./prisma"
 import { sseBus } from "./sse-bus"
 
-async function emitToUser(userId: string) {
-  const unreadCount = await prisma.notification.count({
-    where: { userId, read: false },
-  })
+async function emitToUser(userId: string, unreadCount?: number) {
+  if (unreadCount === undefined) {
+    unreadCount = await prisma.notification.count({
+      where: { userId, read: false },
+    })
+  }
   sseBus.emit(userId, JSON.stringify({
     type: "notification",
     unreadCount,
   }))
+}
+
+async function batchEmit(userIds: string[]) {
+  if (userIds.length === 0) return
+  const unreadCounts = await prisma.notification.groupBy({
+    by: ["userId"],
+    where: { userId: { in: userIds }, read: false },
+    _count: { id: true },
+  })
+  const countMap = new Map(unreadCounts.map((uc: any) => [uc.userId, uc._count.id]))
+  await Promise.all(userIds.map((userId) =>
+    emitToUser(userId, countMap.get(userId) ?? 0)
+  ))
 }
 
 export async function notifyAllUsers(params: {
@@ -33,11 +48,10 @@ export async function notifyAllUsers(params: {
       link: params.link || null,
     }))
 
-  await prisma.notification.createMany({ data: notifications })
+  if (notifications.length === 0) return
 
-  for (const n of notifications) {
-    await emitToUser(n.userId)
-  }
+  await prisma.notification.createMany({ data: notifications })
+  await batchEmit(notifications.map((n) => n.userId))
 }
 
 export async function notifyUser(params: {
@@ -82,7 +96,5 @@ export async function notifyAdmins(params: {
     })),
   })
 
-  for (const u of admins) {
-    await emitToUser(u.id)
-  }
+  await batchEmit(admins.map((u: any) => u.id))
 }

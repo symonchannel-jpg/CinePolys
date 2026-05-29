@@ -161,7 +161,7 @@ src/
 - [ ] Input validation with Zod on all endpoints
 - [ ] Project-scoped notifications (avoid spamming all users)
 - [ ] Validate callbackUrl on login (open redirect)
-- [ ] Prisma transactions for multi-model operations
+- [x] Prisma transactions for multi-model operations
 - [ ] Rate limiting on critical API routes
 
 ### UX / Interface
@@ -169,7 +169,7 @@ src/
 - [ ] Toast system instead of native `alert()`
 - [ ] Deep links in search results (`/casting?focus=id`)
 - [ ] Filtered vs total counts in list headers
-- [ ] Accessibility: ARIA roles on tabs, keyboard nav on lists
+- [x] Accessibility: ARIA roles on tabs, keyboard nav on lists
 - [x] Reusable `<ColorPicker>` component
 
 ### Redundancies / Code Quality
@@ -180,10 +180,10 @@ src/
 - [x] Remove manual JSON.parse/stringify for Prisma Json fields
 
 ### Performance
-- [ ] Parallelize dashboard queries with `Promise.all`
-- [ ] Composite indexes (`projectId + archivedAt + status`)
-- [ ] Batch notifications (avoid sequential loop)
-- [ ] Redis-based SSE bus (multi-instance support)
+- [x] Parallelize dashboard queries with `Promise.all`
+- [x] Composite indexes (`projectId + archivedAt + status`)
+- [x] Batch notifications (avoid sequential loop)
+- [ ] Redis-based SSE bus (multi-instance support) — *low priority for single-server*
 
 ### Architecture
 - [ ] Global error boundaries per route (`error.tsx`)
