@@ -50,7 +50,7 @@
 | ✅ **Tasks**      | Board with filters, comments and due dates |
 | 📋 **Call Sheets**| Production call sheets with shareable links |
 | 👥 **Departments**| Team organization |
-| 🎞️ **Post-production** | VFX tracking, cuts, ADR and deliverables |
+| 🎞️ **Post-production** | Unified feed: cuts, screening notes with timecode, VFX tracking |
 | 📊 **Activity**   | Real-time change history (SSE) |
 
 ---
@@ -153,12 +153,23 @@ src/
 - **Tasks** — Board with filters, comments and due dates
 - **Call Sheets** — Production call sheets with shareable links
 - **Departments** — Team organization
-- **Post-production** — VFX tracking, cuts, ADR and deliverables
+- **Post-production** — Unified feed: manage cuts, add screening notes with timecodes, track VFX shots
 - **Activity** — Real-time change history (SSE)
 
 ---
 
 ## 🗺️ Roadmap
+
+### Post-Production (v0.08)
+- [x] Unified feed replacing 4 disconnected tabs (Cuts, VFX, ADR, Deliverables)
+- [x] Cuts as context: visible cards, filter dropdown, one-click note creation
+- [x] Screening notes with timecode, category, resolve toggle, task linking
+- [x] VFX tracking with inline status updates, assignee, complexity
+- [x] Slide-over detail panel replacing modals for item actions
+- [x] Removed ADR and Deliverables (overly complex for scope)
+- [x] Migration endpoint to archive ADR/Deliverable records
+- [x] All post-production mutations invalidate unified feed query key
+- [x] Modular components: CutsList, FeedPanel, FeedItem, FilterBar, SlideOver, dialogs
 
 ### Security
 - [ ] Role-based authorization middleware for API routes

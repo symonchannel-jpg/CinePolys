@@ -423,7 +423,10 @@ export function useCreateVFXShot() {
   return useMutation({
     mutationFn: (body: Record<string, any>) =>
       fetch("/api/vfx-shots", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.json()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["vfx-shots"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["vfx-shots"] })
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
+    },
   })
 }
 
@@ -432,7 +435,10 @@ export function useUpdateVFXShot() {
   return useMutation({
     mutationFn: ({ id, ...body }: { id: string } & Record<string, any>) =>
       fetch(`/api/vfx-shots/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.json()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["vfx-shots"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["vfx-shots"] })
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
+    },
   })
 }
 
@@ -440,7 +446,10 @@ export function useArchiveVFXShot() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => fetch(`/api/vfx-shots/${id}`, { method: "DELETE" }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["vfx-shots"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["vfx-shots"] })
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
+    },
   })
 }
 
@@ -610,7 +619,10 @@ export function useCreatePostCut() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       }).then((r) => r.json()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["post-cuts"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["post-cuts"] })
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
+    },
   })
 }
 
@@ -623,7 +635,10 @@ export function useUpdatePostCut() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       }).then((r) => r.json()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["post-cuts"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["post-cuts"] })
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
+    },
   })
 }
 
@@ -631,7 +646,10 @@ export function useArchivePostCut() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => fetch(`/api/post/cuts/${id}`, { method: "DELETE" }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["post-cuts"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["post-cuts"] })
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
+    },
   })
 }
 
@@ -648,6 +666,7 @@ export function useCreatePostScreeningNote() {
       }).then((r) => r.json()),
     onSuccess: (_, { cutId }) => {
       qc.invalidateQueries({ queryKey: ["post-cuts"] })
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
     },
   })
 }
@@ -663,6 +682,7 @@ export function useUpdatePostScreeningNote() {
       }).then((r) => r.json()),
     onSuccess: (_, { cutId }) => {
       qc.invalidateQueries({ queryKey: ["post-cuts"] })
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
     },
   })
 }
@@ -674,6 +694,69 @@ export function useDeletePostScreeningNote() {
       fetch(`/api/post/cuts/${cutId}/notes/${noteId}`, { method: "DELETE" }),
     onSuccess: (_, { cutId }) => {
       qc.invalidateQueries({ queryKey: ["post-cuts"] })
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
+    },
+  })
+}
+
+// ─── Post-Production Feed (Unified) ─────────────────────────────────────────
+
+export function usePostProductionFeed(filters?: {
+  cutId?: string
+  type?: string
+  status?: string
+  search?: string
+}) {
+  const { currentProjectId } = useProject()
+  const params = new URLSearchParams()
+  if (currentProjectId) params.set("projectId", currentProjectId)
+  if (filters?.cutId && filters.cutId !== "all") params.set("cutId", filters.cutId)
+  if (filters?.type && filters.type !== "all") params.set("type", filters.type)
+  if (filters?.status && filters.status !== "all") params.set("status", filters.status)
+  if (filters?.search) params.set("search", filters.search)
+  const query = params.toString()
+
+  return useQuery({
+    queryKey: ["post-production-feed", currentProjectId, filters],
+    queryFn: () => fetch(`/api/post-production/feed${query ? `?${query}` : ""}`).then((r) => r.json()),
+    enabled: !!currentProjectId,
+    staleTime: 30_000,
+  })
+}
+
+export function useTogglePostNoteResolve() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (noteId: string) =>
+      fetch(`/api/post-production/notes/${noteId}/toggle-resolve`, { method: "POST" }).then((r) => r.json()),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
+    },
+  })
+}
+
+export function useUpdatePostNote() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ noteId, ...body }: { noteId: string } & Record<string, any>) =>
+      fetch(`/api/post-production/notes/${noteId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }).then((r) => r.json()),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
+    },
+  })
+}
+
+export function useDeletePostNote() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ noteId }: { noteId: string }) =>
+      fetch(`/api/post-production/notes/${noteId}`, { method: "DELETE" }).then((r) => r.json()),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["post-production-feed"] })
     },
   })
 }

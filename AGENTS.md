@@ -99,6 +99,56 @@ Film production management app (Next.js 16, React 19, Prisma 7, Tailwind CSS 4, 
 - For production: `npx prisma generate --schema prisma/schema.prisma`
 - For local: `npx prisma generate --schema prisma/schema-sqlite.generated.prisma`
 
+## Post-Production (v0.08) — Unified Feed Architecture
+
+Post-producción was redesigned from 4 disconnected tabs (Cuts, VFX, ADR, Deliverables) into a **single unified feed** centered around the editor's workflow.
+
+### Components (`src/components/modules/post-production/`)
+| File | Purpose |
+|------|---------|
+| `CutsList.tsx` | Visible cut cards above the feed — click selects/deselects a cut for filtering |
+| `FeedPanel.tsx` | Scrollable feed showing Notes + VFX items mixed chronologically |
+| `FeedItem.tsx` | Card that renders as a Note or VFX item depending on `itemType` |
+| `FilterBar.tsx` | Dropdown cuts selector, type filter (notes/vfx/all), status filter, search |
+| `SlideOver.tsx` | Right-side slide-over panel for item details and actions |
+| `NoteDetail.tsx` | Slide-over content: note details, toggle resolve, edit, create task |
+| `VFXDetail.tsx` | Slide-over content: VFX status/assignee/description editing |
+| `CreateCutDialog.tsx` | Dialog to create a new cut (name, version, video URL) |
+| `CreateVFXDialog.tsx` | Dialog to create a new VFX shot (shot ID, description, complexity, assignee) |
+| `CreateNoteDialog.tsx` | Dialog to add a screening note to a specific cut (timecode, category, content) |
+
+### API routes (`src/app/api/post-production/`)
+| Route | Method | Purpose |
+|-------|--------|---------|
+| `/feed` | GET | Unified feed: returns `{ cuts: [], items: [] }` with optional filters (`cutId`, `type`, `status`, `search`) |
+| `/notes/[noteId]` | GET/PATCH/DELETE | CRUD for individual screening notes |
+| `/notes/[noteId]/toggle-resolve` | POST | Toggle note between RESOLVED and PENDING |
+| `/migrate` | POST | One-time migration: archives all ADR and Deliverable records (ADMIN only) |
+
+### Hooks
+- `usePostProductionFeed(filters?)` — unified feed query with `{ cuts, items }` response
+- `useTogglePostNoteResolve(noteId)` — POST, invalidates `["post-production-feed"]`
+- `useUpdatePostNote({ noteId, ... })` — PATCH, invalidates `["post-production-feed"]`
+- `useDeletePostNote({ noteId })` — DELETE, invalidates `["post-production-feed"]`
+
+### What was removed (v0.08)
+- **ADR tab** (`PostADR` model) — too specific for complex feature films; records archived via migration
+- **Deliverables tab** (`PostDeliverable` model) — QC checklist was overly enterprise; records archived
+- **Tab-based navigation** — replaced by unified feed + filter bar
+
+### Key design decisions
+- **Cuts are the context, not feed items**. They appear as visible cards above the feed and in the filter dropdown. Selecting a cut shows its notes and enables the "Add Note" button.
+- **All mutations invalidate `["post-production-feed"]`** in addition to their legacy query keys (`["post-cuts"]`, `["vfx-shots"]`).
+- **Slide-over panel** replaces modals for item details. 400px right panel, overlay backdrop, Escape to close.
+- **Archiving a cut** resets the filter if that cut was selected.
+
+### Flow
+1. Create a cut (`+ Nuevo Corte`) → appears in CutsList section + dropdown
+2. Select the cut → `+ Agregar Nota` button appears
+3. Add notes with timecode + category + content → appear in feed
+4. Create VFX shots independently (`+ Nuevo VFX`) → appear in feed
+5. Click any item → SlideOver with detail + actions (resolve, archive, create task)
+
 ## Known pre-existing issues
 - `lightningcss.linux-x64-gnu.node` missing in CI — Tailwind 4 build issue, unrelated to app code
 - `backup_schedule/` directory has old schema — TypeScript errors expected
