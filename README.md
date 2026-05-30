@@ -81,9 +81,13 @@ npm install
 # Set up environment variables
 cp .env.example .env
 
-# Generate Prisma client and sync database
-npx prisma generate --schema prisma/schema-sqlite.prisma
-npx prisma db push --schema prisma/schema-sqlite.prisma
+# Generate Prisma client and sync database (local)
+npx prisma generate --schema prisma/schema-sqlite.generated.prisma
+npx prisma db push --schema prisma/schema-sqlite.generated.prisma
+
+# For production, use the main schema instead:
+# npx prisma generate --schema prisma/schema.prisma
+# npx prisma db push --schema prisma/schema.prisma
 
 # Seed initial data (optional)
 npx tsx prisma/seed.ts

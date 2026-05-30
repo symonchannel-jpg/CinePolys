@@ -23,8 +23,7 @@ Film production management app (Next.js 16, React 19, Prisma 7, Tailwind CSS 4, 
 ## Key files
 | File | Purpose |
 |------|---------|
-| `prisma/schema.prisma` | PostgreSQL schema |
-| `prisma/schema-sqlite.prisma` | SQLite dev schema (mirror) |
+| `prisma/schema.prisma` | Single source of truth (PostgreSQL). SQLite version auto-generated as `schema-sqlite.generated.prisma` |
 | `src/app/globals.css` | Design tokens, semantic colors, type scale |
 | `src/lib/api-hooks.ts` | All React Query hooks |
 | `src/lib/constants.ts` | Shared labels/colors for all statuses/priorities |
@@ -37,7 +36,7 @@ Film production management app (Next.js 16, React 19, Prisma 7, Tailwind CSS 4, 
 | `src/components/ui/toast.tsx` | Toast system |
 | `src/components/ui/pagination-controls.tsx` | Pagination UI |
 
-## Design system (v0.7b)
+## Design system (v0.7c)
 - Corporate OKLCH palette defined in `globals.css` via `@theme inline`
 - Semantic tokens: `primary` (slate-blue), `success` (teal), `warning` (amber), `info` (steel-blue), `danger` (brick), `neutral` (slate)
 - Use Tailwind utilities: `bg-success`, `text-warning`, `border-info/20`, `bg-danger/10`
@@ -92,6 +91,13 @@ Film production management app (Next.js 16, React 19, Prisma 7, Tailwind CSS 4, 
 2. Commit and push to main
 3. `gh release create vX.Y --title "..." --notes "..." --target main`
 4. Or use GitHub API: `POST /repos/:owner/:repo/releases`
+
+## Schema → single source of truth (v0.7c)
+- `prisma/schema.prisma` is the sole authoritative schema (PostgreSQL provider)
+- `prisma/schema-sqlite.generated.prisma` is auto-generated via `prisma.config.ts` (or `scripts/gen-sqlite-schema.mjs`) for local dev
+- Delete old `schema-sqlite.prisma`, update all scripts to use generated schema
+- For production: `npx prisma generate --schema prisma/schema.prisma`
+- For local: `npx prisma generate --schema prisma/schema-sqlite.generated.prisma`
 
 ## Known pre-existing issues
 - `lightningcss.linux-x64-gnu.node` missing in CI — Tailwind 4 build issue, unrelated to app code

@@ -55,16 +55,26 @@ if (-not (Test-Path "node_modules")) {
     Write-Host "[OK] Dependencias listas." -ForegroundColor Green
 }
 
+# --- Generar schema SQLite ---
+Write-Host "`nGenerando schema SQLite..." -ForegroundColor Yellow
+node scripts/gen-sqlite-schema.mjs
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[ERROR] Generacion de schema SQLite fallo." -ForegroundColor Red
+    Write-Host "Presiona cualquier tecla para salir..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    exit 1
+}
+
 # --- Configurar Prisma ---
 Write-Host "`nConfigurando Prisma..." -ForegroundColor Yellow
-npx prisma generate --schema prisma/schema-sqlite.prisma
+npx prisma generate --schema prisma/schema-sqlite.generated.prisma
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[ERROR] Prisma generate fallo." -ForegroundColor Red
     Write-Host "Presiona cualquier tecla para salir..."
     $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     exit 1
 }
-npx prisma db push --schema prisma/schema-sqlite.prisma
+npx prisma db push --schema prisma/schema-sqlite.generated.prisma
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[ERROR] Prisma db push fallo." -ForegroundColor Red
     Write-Host "Presiona cualquier tecla para salir..."

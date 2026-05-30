@@ -1,7 +1,20 @@
 import { defineConfig } from "prisma/config"
+import { readFileSync, writeFileSync } from "fs"
+import { join } from "path"
 
 const isProd = process.env.NODE_ENV === "production"
-const schema = isProd ? "prisma/schema.prisma" : "prisma/schema-sqlite.prisma"
+const mainSchema = join("prisma", "schema.prisma")
+const root = process.cwd()
+
+let schema = mainSchema
+
+if (!isProd) {
+  const src = readFileSync(join(root, mainSchema), "utf-8")
+  const dest = src.replace('provider = "postgresql"', 'provider = "sqlite"')
+  const genPath = join("prisma", "schema-sqlite.generated.prisma")
+  writeFileSync(join(root, genPath), dest)
+  schema = genPath
+}
 
 export default defineConfig({
   schema,
