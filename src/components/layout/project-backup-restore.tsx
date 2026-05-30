@@ -49,7 +49,7 @@ export function ProjectBackupRestore() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={
-        <button className="flex items-center w-full rounded-md py-1 px-3 gap-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer" title="Backup">
+        <button className="flex items-center w-full rounded-md py-1 px-3 gap-2 text-sm text-danger hover:bg-danger/10 transition-colors cursor-pointer" title="Backup">
           <span className="w-5 text-center text-base inline-flex items-center justify-center shrink-0">💾</span>
           <span className="overflow-hidden whitespace-nowrap max-w-40 opacity-100">Backup</span>
         </button>

@@ -164,6 +164,15 @@ src/
 - [x] Prisma transactions for multi-model operations
 - [ ] Rate limiting on critical API routes
 
+### Design System
+- [x] Corporate color palette with OKLCH tokens (primary, success, warning, info, danger, neutral)
+- [x] Semantic CSS variables replacing hardcoded Tailwind colors (`bg-success`, `text-warning`, etc.)
+- [x] Centralized status/priority/complexity colors in `constants.ts`
+- [x] Unified progress bars (single `--primary` color instead of rainbow)
+- [x] Geist Sans properly applied as body font
+- [x] Custom type scale for consistent typography
+- [x] Professional ColorPicker presets
+
 ### UX / Interface
 - [x] Server-side pagination (offset-based, 20 items/page)
 - [x] Toast system replacing native `alert()`

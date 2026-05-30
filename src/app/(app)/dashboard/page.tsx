@@ -198,7 +198,7 @@ export default function DashboardPage() {
               <div className="space-y-2">
                 {today.tasks.slice(0, 5).map((t: any) => (
                   <Link key={t.id} href={`/tasks/${t.id}`} className="flex items-center gap-3 rounded-lg p-2 -mx-2 hover:bg-muted/50 transition-colors">
-                    <div className={cn("w-2 h-2 rounded-full shrink-0", statusDot[t.status] || "bg-gray-500")} />
+                    <div className={cn("w-2 h-2 rounded-full shrink-0", statusDot[t.status] || "bg-neutral")} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-foreground truncate">{t.title}</p>
                       <p className="text-xs text-muted-foreground">
@@ -220,13 +220,13 @@ export default function DashboardPage() {
             )}
             {today.blockedCount > 0 && (
               <div className="flex items-center gap-2 pt-2 border-t border-border">
-                <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-danger shrink-0" />
                 <span className="text-xs text-muted-foreground">{today.blockedCount} item{today.blockedCount !== 1 ? "s" : ""} bloqueado{today.blockedCount !== 1 ? "s" : ""}</span>
               </div>
             )}
             {today.completedSinceYesterday > 0 && (
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-success shrink-0" />
                 <span className="text-xs text-muted-foreground">{today.completedSinceYesterday} completada{today.completedSinceYesterday !== 1 ? "s" : ""} desde ayer</span>
               </div>
             )}
@@ -242,12 +242,12 @@ export default function DashboardPage() {
               <span className="text-sm text-muted-foreground">Tareas</span>
               <span className="text-sm font-medium text-foreground">{stats.completed}/{stats.totalTasks} ({taskPct}%)</span>
             </div>
-            <ProgressBar value={stats.completed} max={stats.totalTasks} color="bg-green-500" />
+            <ProgressBar value={stats.completed} max={stats.totalTasks} />
             <div className="flex gap-3 mt-1.5 text-xs text-muted-foreground">
               <span>{stats.pending} pend.</span>
               <span>{stats.inProgress} prog.</span>
               <span>{stats.review} rev.</span>
-              {stats.overdue > 0 && <span className="text-red-400">{stats.overdue} venc.</span>}
+              {stats.overdue > 0 && <span className="text-danger">{stats.overdue} venc.</span>}
             </div>
           </div>
 
@@ -256,7 +256,7 @@ export default function DashboardPage() {
               <span className="text-sm text-muted-foreground">Guiones</span>
               <span className="text-sm font-medium text-foreground">{stats.lockedScripts}/{stats.totalScripts} bloqueados</span>
             </div>
-            <ProgressBar value={stats.lockedScripts} max={stats.totalScripts} color="bg-blue-500" />
+            <ProgressBar value={stats.lockedScripts} max={stats.totalScripts} />
           </div>
 
           <button
@@ -284,7 +284,7 @@ export default function DashboardPage() {
                               <span className="text-sm text-muted-foreground">Cortes de Montaje</span>
                               <span className="text-sm font-medium text-foreground">{stats.completedCuts}/{stats.totalCuts} ({cutPct}%)</span>
                             </div>
-                            <ProgressBar value={stats.completedCuts} max={stats.totalCuts} color="bg-amber-500" />
+                            <ProgressBar value={stats.completedCuts} max={stats.totalCuts} />
                           </div>
                         )}
 
@@ -294,7 +294,7 @@ export default function DashboardPage() {
                               <span className="text-sm text-muted-foreground">VFX</span>
                               <span className="text-sm font-medium text-foreground">{stats.approvedVFX}/{stats.totalVFX} ({vfxPct}%)</span>
                             </div>
-                            <ProgressBar value={stats.approvedVFX} max={stats.totalVFX} color="bg-purple-500" />
+                            <ProgressBar value={stats.approvedVFX} max={stats.totalVFX} />
                             <div className="flex gap-3 mt-1.5 text-xs text-muted-foreground">
                               <span>{stats.vfxInReview} en rev.</span>
                             </div>
@@ -307,7 +307,7 @@ export default function DashboardPage() {
                               <span className="text-sm text-muted-foreground">Entregables (QC)</span>
                               <span className="text-sm font-medium text-foreground">{stats.approvedDeliverables}/{stats.totalDeliverables} ({delivPct}%)</span>
                             </div>
-                            <ProgressBar value={stats.approvedDeliverables} max={stats.totalDeliverables} color="bg-indigo-500" />
+                            <ProgressBar value={stats.approvedDeliverables} max={stats.totalDeliverables} />
                           </div>
                         )}
                 </div>
@@ -423,7 +423,7 @@ export default function DashboardPage() {
                   href={`/tasks/${t.id}`}
                   className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 -mx-2 hover:bg-muted/50 transition-colors"
                 >
-                  <div className={cn("w-1.5 h-1.5 rounded-full shrink-0", statusDot[t.status] || "bg-gray-500")} />
+                  <div className={cn("w-1.5 h-1.5 rounded-full shrink-0", statusDot[t.status] || "bg-neutral")} />
                   <span className="text-xs text-foreground truncate flex-1">{t.title}</span>
                   <span className={cn("text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0", priorityColors[t.priority] || "")}>
                     {t.priority === "URGENT" ? "Urgente" : t.priority === "HIGH" ? "Alta" : t.priority === "MEDIUM" ? "Media" : "Baja"}

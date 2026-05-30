@@ -23,38 +23,15 @@ import {
 import {
   SCRIPT_STATUS_COLORS as statusColors,
   SCRIPT_STATUS_LABELS as statusLabels,
+  BREAKDOWN_STATUS_COLORS as breakdownStatusColors,
+  BREAKDOWN_STATUS_LABELS as breakdownStatusLabels,
+  BREAKDOWN_CATEGORY_CONFIG as categoryConfig,
 } from "@/lib/constants"
 
 const typeLabels: Record<string, string> = {
   LITERARY: "Literario",
   TECHNICAL: "Técnico",
   NARRATIVE: "Narrativo",
-}
-
-const categoryConfig: Record<string, { label: string; icon: string; color: string }> = {
-  CHARACTER: { label: "Personajes", icon: "👤", color: "text-blue-400" },
-  PROP: { label: "Utilería", icon: "🔧", color: "text-amber-400" },
-  WARDROBE: { label: "Vestuario", icon: "👔", color: "text-purple-400" },
-  LOCATION: { label: "Locaciones", icon: "📍", color: "text-green-400" },
-  VEHICLE: { label: "Vehículos", icon: "🚗", color: "text-cyan-400" },
-  SFX: { label: "SFX", icon: "💥", color: "text-orange-400" },
-  VFX: { label: "VFX", icon: "✨", color: "text-pink-400" },
-  EXTRA: { label: "Extras", icon: "👥", color: "text-teal-400" },
-  OTHER: { label: "Otros", icon: "📌", color: "text-gray-400" },
-}
-
-const breakdownStatusColors: Record<string, string> = {
-  PENDING: "bg-gray-500/10 text-gray-400",
-  IN_PROGRESS: "bg-blue-500/10 text-blue-400",
-  COMPLETED: "bg-green-500/10 text-green-400",
-  BLOCKED: "bg-red-500/10 text-red-400",
-}
-
-const breakdownStatusLabels: Record<string, string> = {
-  PENDING: "Pendiente",
-  IN_PROGRESS: "En Progreso",
-  COMPLETED: "Completado",
-  BLOCKED: "Bloqueado",
 }
 
 function formatBytes(bytes: number) {
@@ -93,7 +70,7 @@ function ScriptCard({ script, onSelect, onArchive }: { script: any; onSelect: ()
             <span className="text-foreground font-medium">{script._count.completed}/{script._count.total}</span>
           </div>
           <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-            <div className="h-full rounded-full bg-green-500 transition-all" style={{ width: `${progress}%` }} />
+            <div className="h-full rounded-full transition-all" style={{ width: `${progress}%`, backgroundColor: "var(--success)" }} />
           </div>
         </div>
       ) : (
@@ -236,7 +213,7 @@ function ScriptsPageContent() {
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
                   className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 transition-colors min-h-[160px] ${
-                    dragging ? "border-primary bg-primary/5" : formFile ? "border-green-500/40 bg-green-500/5" : "border-border hover:border-primary/40"
+                    dragging ? "border-primary bg-primary/5" : formFile ? "border-success/40 bg-success/5" : "border-border hover:border-primary/40"
                   }`}
                 >
                   <input ref={fileInputRef} type="file" accept=".pdf" className="hidden" onChange={(e) => setFormFile(e.target.files?.[0] || null)} />
@@ -367,9 +344,9 @@ function ScriptOverview({ script }: { script: any }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { value: total, label: "Elementos", color: "text-foreground" },
-          { value: completed, label: "Completados", color: "text-green-400" },
-          { value: inProgress, label: "En Progreso", color: "text-blue-400" },
-          { value: pending, label: "Pendientes", color: "text-gray-400" },
+          { value: completed, label: "Completados", color: "text-success" },
+          { value: inProgress, label: "En Progreso", color: "text-info" },
+          { value: pending, label: "Pendientes", color: "text-neutral" },
         ].map((stat) => (
           <div key={stat.label} className="rounded-xl border border-border bg-card p-4 text-center">
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
@@ -385,7 +362,7 @@ function ScriptOverview({ script }: { script: any }) {
             <span className="text-sm text-muted-foreground">{Math.round((completed / total) * 100)}%</span>
           </div>
           <div className="h-2 rounded-full bg-muted overflow-hidden">
-            <div className="h-full rounded-full bg-green-500 transition-all" style={{ width: `${(completed / total) * 100}%` }} />
+            <div className="h-full rounded-full transition-all" style={{ width: `${(completed / total) * 100}%`, backgroundColor: "var(--success)" }} />
           </div>
         </div>
       )}
@@ -398,7 +375,7 @@ function ScriptOverview({ script }: { script: any }) {
               <p className="text-sm font-medium text-foreground">{cat.label}</p>
               <p className="text-xs text-muted-foreground mt-1">{cat.done}/{cat.total}</p>
               <div className="h-1.5 rounded-full bg-muted overflow-hidden mt-2">
-                <div className="h-full rounded-full bg-green-500 transition-all" style={{ width: `${cat.total > 0 ? (cat.done / cat.total) * 100 : 0}%` }} />
+                <div className="h-full rounded-full transition-all" style={{ width: `${cat.total > 0 ? (cat.done / cat.total) * 100 : 0}%`, backgroundColor: "var(--success)" }} />
               </div>
             </div>
           ))}
@@ -406,8 +383,8 @@ function ScriptOverview({ script }: { script: any }) {
       )}
 
       {blocked > 0 && (
-        <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-3 text-center">
-          <p className="text-sm text-red-400">{blocked} elemento{blocked > 1 ? "s" : ""} bloqueado{blocked > 1 ? "s" : ""}</p>
+        <div className="rounded-xl border border-danger/30 bg-danger/5 p-3 text-center">
+          <p className="text-sm text-danger">{blocked} elemento{blocked > 1 ? "s" : ""} bloqueado{blocked > 1 ? "s" : ""}</p>
         </div>
       )}
 

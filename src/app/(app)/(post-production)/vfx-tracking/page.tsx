@@ -37,87 +37,19 @@ import {
   useCasting,
   useCreateTask,
 } from "@/lib/api-hooks"
-
-// ─── Constants for VFX ──────────────────────────────────────────────────────
-const vfxStatusColors: Record<string, string> = {
-  PENDING: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-  IN_PROGRESS: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  REVIEW: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-  APPROVED: "bg-green-500/10 text-green-400 border-green-500/20",
-  REJECTED: "bg-red-500/10 text-red-400 border-red-500/20",
-}
-
-const vfxStatusLabels: Record<string, string> = {
-  PENDING: "Pendiente",
-  IN_PROGRESS: "En Progreso",
-  REVIEW: "Revisión",
-  APPROVED: "Aprobado",
-  REJECTED: "Rechazado",
-}
-
-const complexityColors: Record<string, string> = {
-  LOW: "bg-green-500/10 text-green-400",
-  MEDIUM: "bg-yellow-500/10 text-yellow-400",
-  HIGH: "bg-red-500/10 text-red-400",
-}
-
-const complexityLabels: Record<string, string> = {
-  LOW: "Baja",
-  MEDIUM: "Media",
-  HIGH: "Alta",
-}
-
-// ─── Constants for Cuts ─────────────────────────────────────────────────────
-const cutStatusColors: Record<string, string> = {
-  DRAFT: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-  IN_REVIEW: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  COMPLETED: "bg-green-500/10 text-green-400 border-green-500/20",
-  ARCHIVED: "bg-red-500/10 text-red-400 border-red-500/20",
-}
-
-const cutStatusLabels: Record<string, string> = {
-  DRAFT: "Borrador",
-  IN_REVIEW: "En Revisión",
-  COMPLETED: "Aprobado / Lock",
-  ARCHIVED: "Archivado",
-}
-
-// ─── Constants for ADR ──────────────────────────────────────────────────────
-const adrStatusColors: Record<string, string> = {
-  PENDING: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-  RECORDED: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  MIXED: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-  APPROVED: "bg-green-500/10 text-green-400 border-green-500/20",
-}
-
-const adrStatusLabels: Record<string, string> = {
-  PENDING: "Pendiente",
-  RECORDED: "Grabado",
-  MIXED: "Mezclado",
-  APPROVED: "Aprobado",
-}
-
-// ─── Constants for Deliverables ──────────────────────────────────────────────
-const deliverableStatusColors: Record<string, string> = {
-  PENDING: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-  IN_PROGRESS: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  QC_FAILED: "bg-red-500/10 text-red-400 border-red-500/20",
-  APPROVED: "bg-green-500/10 text-green-400 border-green-500/20",
-}
-
-const deliverableStatusLabels: Record<string, string> = {
-  PENDING: "Pendiente",
-  IN_PROGRESS: "En Progreso",
-  QC_FAILED: "Falló QC",
-  APPROVED: "Aprobado",
-}
-
-const deliverableTypeLabels: Record<string, string> = {
-  MASTER: "Máster Video",
-  AUDIO: "Pistas Audio",
-  SUBTITLES: "Subtítulos",
-  OTHER: "Otros",
-}
+import {
+  VFX_STATUS_COLORS as vfxStatusColors,
+  VFX_STATUS_LABELS as vfxStatusLabels,
+  COMPLEXITY_COLORS as complexityColors,
+  COMPLEXITY_LABELS as complexityLabels,
+  CUT_STATUS_COLORS as cutStatusColors,
+  CUT_STATUS_LABELS as cutStatusLabels,
+  ADR_STATUS_COLORS as adrStatusColors,
+  ADR_STATUS_LABELS as adrStatusLabels,
+  DELIVERABLE_STATUS_COLORS as deliverableStatusColors,
+  DELIVERABLE_STATUS_LABELS as deliverableStatusLabels,
+  DELIVERABLE_TYPE_LABELS as deliverableTypeLabels,
+} from "@/lib/constants"
 
 export default function PostProductionHub() {
   const { data: session } = useSession()
@@ -613,7 +545,7 @@ export default function PostProductionHub() {
                                 className={cn(
                                   "h-5 w-5 rounded border flex items-center justify-center text-xs shrink-0 mt-0.5 transition-colors",
                                   isResolved
-                                    ? "bg-green-500 border-green-600 text-white"
+                                    ? "bg-success text-white"
                                     : "border-border hover:border-primary/50 bg-muted/40"
                                 )}
                               >
@@ -640,7 +572,7 @@ export default function PostProductionHub() {
                             {/* Connected task creator for editing workflow */}
                             <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
                               {note.taskId ? (
-                                <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] font-medium flex items-center gap-1">
+                                <Badge className="bg-info/10 text-info border-info/20 text-[10px] font-medium flex items-center gap-1">
                                   ✓ Tarea Vinculada
                                 </Badge>
                               ) : (
@@ -767,10 +699,10 @@ export default function PostProductionHub() {
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {[
               { label: "Total", count: shots.length, color: "text-foreground" },
-              { label: "Pendientes", count: shots.filter((s: any) => s.status === "PENDING").length, color: "text-gray-400" },
-              { label: "En Progreso", count: shots.filter((s: any) => s.status === "IN_PROGRESS").length, color: "text-blue-400" },
-              { label: "En Revisión", count: shots.filter((s: any) => s.status === "REVIEW").length, color: "text-purple-400" },
-              { label: "Aprobados", count: shots.filter((s: any) => s.status === "APPROVED").length, color: "text-green-400" },
+              { label: "Pendientes", count: shots.filter((s: any) => s.status === "PENDING").length, color: "text-neutral" },
+              { label: "En Progreso", count: shots.filter((s: any) => s.status === "IN_PROGRESS").length, color: "text-info" },
+              { label: "En Revisión", count: shots.filter((s: any) => s.status === "REVIEW").length, color: "text-warning" },
+              { label: "Aprobados", count: shots.filter((s: any) => s.status === "APPROVED").length, color: "text-success" },
             ].map((st, i) => (
               <div key={i} className="rounded-lg border border-border bg-card p-3 text-center">
                 <p className={cn("text-2xl font-bold", st.color)}>{st.count}</p>
@@ -1022,7 +954,7 @@ export default function PostProductionHub() {
 
                     <div className="flex items-center gap-1.5 text-right">
                       {adr.taskId ? (
-                        <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] font-medium">
+                        <Badge className="bg-info/10 text-info border-info/20 text-[10px] font-medium">
                           ✓ Sesión Agendada
                         </Badge>
                       ) : (

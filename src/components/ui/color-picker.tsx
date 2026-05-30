@@ -3,14 +3,14 @@
 import { cn } from "@/lib/utils"
 
 const PRESET_COLORS = [
-  "#6366f1",
-  "#8b5cf6",
-  "#f43f5e",
-  "#f59e0b",
-  "#10b981",
-  "#0ea5e9",
-  "#ef4444",
-  "#64748b",
+  "#4f5d75",
+  "#5b6e8a",
+  "#4a8c6f",
+  "#b8863b",
+  "#b84d4d",
+  "#3d4f5c",
+  "#6b5b7b",
+  "#6b7280",
 ]
 
 interface ColorPickerProps {

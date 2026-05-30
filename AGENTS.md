@@ -25,8 +25,9 @@ Film production management app (Next.js 16, React 19, Prisma 7, Tailwind CSS 4, 
 |------|---------|
 | `prisma/schema.prisma` | PostgreSQL schema |
 | `prisma/schema-sqlite.prisma` | SQLite dev schema (mirror) |
+| `src/app/globals.css` | Design tokens, semantic colors, type scale |
 | `src/lib/api-hooks.ts` | All React Query hooks |
-| `src/lib/constants.ts` | Shared labels/colors for statuses, priorities |
+| `src/lib/constants.ts` | Shared labels/colors for all statuses/priorities |
 | `src/lib/activity.ts` | Activity log helper |
 | `src/lib/notifications.ts` | Notification helpers (SSE + DB) |
 | `src/lib/prisma.ts` | Prisma client singleton |
@@ -35,6 +36,15 @@ Film production management app (Next.js 16, React 19, Prisma 7, Tailwind CSS 4, 
 | `src/components/ui/color-picker.tsx` | Reusable color picker |
 | `src/components/ui/toast.tsx` | Toast system |
 | `src/components/ui/pagination-controls.tsx` | Pagination UI |
+
+## Design system (v0.7b)
+- Corporate OKLCH palette defined in `globals.css` via `@theme inline`
+- Semantic tokens: `primary` (slate-blue), `success` (teal), `warning` (amber), `info` (steel-blue), `danger` (brick), `neutral` (slate)
+- Use Tailwind utilities: `bg-success`, `text-warning`, `border-info/20`, `bg-danger/10`
+- Progress bars use inline `backgroundColor: "var(--success)"` for reliability
+- All status/priority/complexity color maps centralized in `src/lib/constants.ts`
+- Font: Geist Sans (`var(--font-geist-sans)`), body uses it via CSS variable
+- Type scale: 3xs (10px) through 3xl (28px)
 
 ## API patterns
 - All routes live in `src/app/api/`

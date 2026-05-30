@@ -147,7 +147,7 @@ export default function AdminUsersPage() {
           {pending.length > 0 && (
             <div className="space-y-3">
               <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-yellow-500" />
+                <span className="h-2 w-2 rounded-full bg-warning" />
                 Pendientes de aprobación ({pending.length})
               </h2>
               <div className="space-y-2">
@@ -156,7 +156,7 @@ export default function AdminUsersPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-medium text-foreground">{user.name}</span>
-                        <Badge variant="outline" className="text-yellow-500 border-yellow-500/30 bg-yellow-500/5">Pendiente</Badge>
+                        <Badge variant="outline" className="text-warning border-warning/30 bg-warning/5">Pendiente</Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">{user.email}</p>
                     </div>
@@ -179,7 +179,7 @@ export default function AdminUsersPage() {
 
           <div className="space-y-3">
             <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-green-500" />
+              <span className="h-2 w-2 rounded-full bg-success" />
               Miembros activos ({active.length})
             </h2>
             {active.length === 0 ? (

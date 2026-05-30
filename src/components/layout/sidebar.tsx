@@ -105,9 +105,9 @@ export function Sidebar({ open, onToggle }: { open: boolean; onToggle: () => voi
         onClick={handleToggle}
         className={`flex h-12 w-full items-center border-b border-sidebar-border shrink-0 hover:bg-sidebar-accent/30 transition-colors ${open ? "justify-center" : "justify-center"}`}
       >
-        <span className={`text-xl font-extrabold text-sidebar-foreground shrink-0 ${!open ? "w-5 text-center" : ""}`}>C</span>
+        <span className={`text-2xl font-extrabold text-sidebar-foreground shrink-0 ${!open ? "w-6 text-center" : ""}`}>C</span>
         <span
-          className={`overflow-hidden whitespace-nowrap transition-all duration-[750ms] font-extrabold text-xl ${open ? "max-w-40 opacity-100" : "max-w-0 opacity-0"}`}
+          className={`overflow-hidden whitespace-nowrap transition-all duration-[750ms] font-extrabold text-2xl ${open ? "max-w-40 opacity-100" : "max-w-0 opacity-0"}`}
           style={{ transitionTimingFunction: "cubic-bezier(0.68, -0.55, 0.265, 1.55)" }}
         >
           inePolys
@@ -223,9 +223,9 @@ function RoleSwitcher() {
   if (role !== "ADMIN") return null
 
   const modes = [
-    { value: "admin" as const, label: "Admin", color: "bg-red-500/10 text-red-400" },
-    { value: "hod" as const, label: "Jefe Depto", color: "bg-blue-500/10 text-blue-400" },
-    { value: "crew" as const, label: "Crew", color: "bg-green-500/10 text-green-400" },
+    { value: "admin" as const, label: "Admin", color: "bg-danger/10 text-danger" },
+    { value: "hod" as const, label: "Jefe Depto", color: "bg-info/10 text-info" },
+    { value: "crew" as const, label: "Crew", color: "bg-success/10 text-success" },
   ]
 
   return (

@@ -26,9 +26,9 @@ export function useToast() {
 }
 
 const variantStyles: Record<ToastVariant, string> = {
-  success: "border-green-500/40 bg-green-500/10",
-  error: "border-red-500/40 bg-red-500/10",
-  info: "border-blue-500/40 bg-blue-500/10",
+  success: "border-success/40 bg-success/10",
+  error: "border-danger/40 bg-danger/10",
+  info: "border-info/40 bg-info/10",
 }
 
 const variantIcons: Record<ToastVariant, string> = {

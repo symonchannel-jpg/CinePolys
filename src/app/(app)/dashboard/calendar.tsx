@@ -131,7 +131,7 @@ export function DashboardCalendar({ tasks }: Props) {
                             className="flex items-center gap-1 truncate rounded px-1 py-0.5 hover:bg-muted/50 cursor-pointer"
                             onClick={(e) => { e.stopPropagation(); router.push(`/tasks/${task.id}`) }}
                           >
-                            <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${statusColors[task.status] || "bg-gray-500"}`} />
+                            <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${statusColors[task.status] || "bg-neutral"}`} />
                             <span className="truncate text-[10px] text-muted-foreground">{task.title}</span>
                           </div>
                         ))}

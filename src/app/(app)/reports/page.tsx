@@ -58,7 +58,7 @@ export default function ReportsPage() {
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Completados</p>
-          <p className="text-2xl font-bold mt-1 text-green-500">{completedDays.length}</p>
+          <p className="text-2xl font-bold mt-1 text-success">{completedDays.length}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Crew asignado</p>
@@ -102,7 +102,7 @@ export default function ReportsPage() {
                 {/* Header */}
                 <div className="flex items-center justify-between bg-muted/30 px-5 py-3 border-b border-border">
                   <div className="flex items-center gap-3">
-                    <div className="flex flex-col items-center justify-center w-10 h-10 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400">
+                    <div className="flex flex-col items-center justify-center w-10 h-10 rounded-lg bg-success/10 text-success">
                       <span className="text-xs font-bold">{d.getDate()}</span>
                       <span className="text-[10px] leading-none">{["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"][d.getMonth()]}</span>
                     </div>
@@ -114,7 +114,7 @@ export default function ReportsPage() {
                       </span>
                     </div>
                   </div>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-success/15 text-success">
                     COMPLETADO
                   </span>
                 </div>
@@ -130,7 +130,7 @@ export default function ReportsPage() {
                       <div className="space-y-1">
                         {scenes.map((s: any, i: number) => (
                           <div key={i} className="flex items-center gap-2 text-sm">
-                            <span className={`inline-block w-1.5 h-1.5 rounded-full ${s.status === "CONFIRMED" ? "bg-green-500" : "bg-yellow-500"}`} />
+                            <span className={`inline-block w-1.5 h-1.5 rounded-full ${s.status === "CONFIRMED" ? "bg-success" : "bg-warning"}`} />
                             <span>{s.sceneNumber || `#${i + 1}`}</span>
                             {s.pageCount && <span className="text-muted-foreground text-xs">({s.pageCount}p)</span>}
                             {s.synopsis && <span className="text-muted-foreground truncate">— {s.synopsis}</span>}
@@ -220,7 +220,7 @@ export default function ReportsPage() {
                   <span className="text-muted-foreground">
                     {d.getDate()}/{d.getMonth() + 1}
                   </span>
-                  <span className="inline-block w-2 h-2 rounded-full bg-blue-500" />
+                  <span className="inline-block w-2 h-2 rounded-full bg-info" />
                 </Link>
               )
             })}
